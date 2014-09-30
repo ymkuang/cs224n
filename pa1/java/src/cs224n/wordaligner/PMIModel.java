@@ -49,7 +49,7 @@ public class PMIModel implements WordAligner {
   }
 
   public void train(List<SentencePair> trainingPairs) {
-    sourceTargetCounts = new CounterMap<String,String>();
+    sourceTargetCounts = new CounterMap<String, String>();
     
     for(SentencePair pair : trainingPairs){
       List<String> targetWords = pair.getTargetWords();
