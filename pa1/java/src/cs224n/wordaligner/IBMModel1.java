@@ -2,7 +2,10 @@ package cs224n.wordaligner;
 
 import cs224n.util.*;
 import java.util.List;
-import java.lang.math;
+import java.util.Set;
+import java.util.Collection;
+import java.util.HashSet;
+import java.lang.Math;
 
 /**
  * Simple word alignment baseline model that maps source positions to target 
@@ -57,56 +60,65 @@ public class IBMModel1 implements WordAligner {
     lexicalProb = new CounterMap<String, String>();
     CounterMap<String, String> oldLexicalProb;
     double delta = 1;
- 
+    int iter = 0;
     // Iteration
-    while (delta > 1e-4) {
+    while (delta > 1e-4 && iter < 50) {
       oldLexicalProb = lexicalProb;
       lexicalProb = new CounterMap<String, String>();
+      iter ++;
 
       // E step
       for(SentencePair pair : trainingPairs){
         List<String> targetWords = pair.getTargetWords();
         List<String> sourceWords = pair.getSourceWords();
-        sourceWords.add(0, "");
       
         for (String target : targetWords) {
           // Compute sum(t(e_i|f_j))
           double totalProb = 0;
-          for (String source : sourceWords) {
-            totalProb += oldLexicalProb.getCount(source, target);
+          for (int srcIndex = -1; srcIndex < sourceWords.size(); srcIndex ++) {
+            String source = (srcIndex == -1 ? "" : sourceWords.get(srcIndex));
+            totalProb += (iter == 1 ? 1 : oldLexicalProb.getCount(source, target));
           }
           // Update M step
-          for (String source : sourceWords) {
-            lexicalProb.incrementCount(source, target, oldLexicalProb.getCount(source, target) / total)
+          for (int srcIndex = -1; srcIndex < sourceWords.size(); srcIndex ++) {
+            String source = (srcIndex == -1 ? "" : sourceWords.get(srcIndex));
+            double increment = (iter == 1 ? 1 : oldLexicalProb.getCount(source, target)) / totalProb; 
+            if (lexicalProb.getCount(source, target) == 0.0) {
+              lexicalProb.setCount(source, target, increment);
+            } else {
+              lexicalProb.incrementCount(source, target, increment);
+            }
           }   
         }
       }
       // M step normalize
-      lexicalProb = Counters.conditionNormalize(lexicalProb);
+      lexicalProb = Counters.conditionalNormalize(lexicalProb);
+      
       // Compute difference
-      delta = computeDiff(lexicalProb, oldLexicalProb);
-    
+      delta = iter == 1 ? 1 : computeDiff(lexicalProb, oldLexicalProb);
     } 
   }
 
-  private double computeDiff(CounterMap<K, K> newCnt, CounterMap<K, K> oldCnt) {
+  private <K> double computeDiff(CounterMap<K, K> newCnt, CounterMap<K, K> oldCnt) {
     double delta = 0;
-    
-    // All keys in two CounterMap
-    Set<K> allKey = newCnt.keySet();
-    allKey.add(oldCnt.keySet());
+    int cnt = 0;    
 
+    // All keys in two CounterMap
+    Set<K> allKey = new HashSet<K>(newCnt.keySet());
+    allKey.addAll(oldCnt.keySet());
+  
     for (K key : allKey) {
       // All values for a key in two CounterMap
-      Set<K> allValue = newCnt.getCounter(key).keySet();
-      allValue.add(oldCnt.getCounter(key).keySet());
+      Set<K> allValue = new HashSet<K>(newCnt.getCounter(key).keySet());
+      allValue.addAll(oldCnt.getCounter(key).keySet());
 
       // Compute difference for each (key, value) pair
       for (K value : allValue) {
-        delta += abs(newCnt.getCount(key, value) - oldCnt.getCount(key, value));
+        delta += Math.abs(newCnt.getCount(key, value) - oldCnt.getCount(key, value));
+        cnt ++;
       }
     }
 
-    return delta; 
+    return delta / cnt; 
   }
 }

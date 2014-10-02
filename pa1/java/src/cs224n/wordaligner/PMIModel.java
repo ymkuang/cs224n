@@ -59,7 +59,11 @@ public class PMIModel implements WordAligner {
       for(String source : sourceWords){
         for(String target : targetWords){
           // TODO: Warm-up. Your code here for collecting sufficient statistics.
-          sourceTargetCounts.incrementCount(source, target, 1.0);
+          if (sourceTargetCounts.getCount(source, target) == 0.0) {
+            sourceTargetCounts.setCount(source, target, 1.0);
+          } else {
+            sourceTargetCounts.incrementCount(source, target, 1.0);
+          }
         }
       }
     }
