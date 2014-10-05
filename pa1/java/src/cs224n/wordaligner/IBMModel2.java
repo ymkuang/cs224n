@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Random;
 import java.lang.Math;
 
 
@@ -64,7 +65,10 @@ public class IBMModel2 implements WordAligner {
   // from the training data.
   private CounterMap<String, String> lexicalProb;
   private CounterMap<TriNumber, Integer> alignProb;
-
+  private Random generator = new Random(1212123);
+  private double tol = 1e-2;
+  private int maxNumberIter = 30;
+ 
   public Alignment align(SentencePair sentencePair) {
     // Placeholder code below. 
     // TODO Implement an inference algorithm for Eq.1 in the assignment
@@ -106,10 +110,10 @@ public class IBMModel2 implements WordAligner {
     alignProb = new CounterMap<TriNumber, Integer>();
     CounterMap<TriNumber, Integer> oldAlignProb;
 
-    double delta = 1;
+    double deltaLexical = 1, deltaAlign = 1;
     int iter = 0;
     // Iteration
-    while (delta > 1e-4 && iter < 50) {
+    while ((deltaLexical > tol || deltaAlign > tol) && iter < maxNumberIter) {
       oldLexicalProb = lexicalProb;
       oldAlignProb = alignProb;
       lexicalProb = new CounterMap<String, String>();
@@ -130,13 +134,13 @@ public class IBMModel2 implements WordAligner {
           for (int srcIndex = -1; srcIndex < m; srcIndex ++) {
             TriNumber position = new TriNumber(srcIndex, n, m);
             String source = (srcIndex == -1 ? "" : sourceWords.get(srcIndex));
-            totalProb += oldLexicalProb.getCount(source, target) * (iter == 1 ? 1.0 / (m + 1) : oldAlignProb.getCount(position, tgtIndex));
+            totalProb += oldLexicalProb.getCount(source, target) * (iter == 1 ? generator.nextDouble() : oldAlignProb.getCount(position, tgtIndex));
           }
           // Update M step
           for (int srcIndex = -1; srcIndex < m; srcIndex ++) {
             TriNumber position = new TriNumber(srcIndex, n, m);
             String source = (srcIndex == -1 ? "" : sourceWords.get(srcIndex));
-            double increment = oldLexicalProb.getCount(source, target) * (iter == 1 ? 1.0 / (m + 1) : oldAlignProb.getCount(position, tgtIndex)) / totalProb; 
+            double increment = oldLexicalProb.getCount(source, target) * (iter == 1 ? generator.nextDouble() : oldAlignProb.getCount(position, tgtIndex)) / totalProb; 
             if (lexicalProb.getCount(source, target) == 0.0) {
               lexicalProb.setCount(source, target, increment);
             } else {
@@ -156,12 +160,12 @@ public class IBMModel2 implements WordAligner {
       alignProb = Counters.conditionalNormalize(alignProb);
       
       // Compute difference
-      if (iter == 1) delta = 1; 
+      if (iter == 1) deltaLexical = deltaAlign = 1; 
       else {
-        delta = computeDiff(lexicalProb, oldLexicalProb);
-        delta += computeDiff(alignProb, oldAlignProb); 
+        deltaLexical = computeDiff(lexicalProb, oldLexicalProb);
+        deltaAlign = computeDiff(alignProb, oldAlignProb); 
       }
-      System.out.printf("%f\n", delta);
+      System.out.printf("%f   %f\n", deltaLexical, deltaAlign);
     } 
   }
 

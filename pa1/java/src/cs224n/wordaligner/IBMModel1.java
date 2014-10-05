@@ -23,6 +23,8 @@ public class IBMModel1 implements WordAligner {
   // TODO: Use arrays or Counters for collecting sufficient statistics
   // from the training data.
   private CounterMap<String,String> lexicalProb;
+  private double tol = 1e-2;
+  private int maxNumberIter = 30;
 
   public CounterMap<String, String> getLexicalProb() {
     return lexicalProb;
@@ -66,7 +68,7 @@ public class IBMModel1 implements WordAligner {
     double delta = 1;
     int iter = 0;
     // Iteration
-    while (delta > 1e-4 && iter < 50) {
+    while (delta > tol && iter < maxNumberIter) {
       oldLexicalProb = lexicalProb;
       lexicalProb = new CounterMap<String, String>();
       iter ++;
