@@ -8,11 +8,7 @@ import java.util.HashSet;
 import java.lang.Math;
 
 /**
- * Simple word alignment baseline model that maps source positions to target 
- * positions along the diagonal of the alignment grid.
- * 
- * IMPORTANT: Make sure that you read the comments in the
- * cs224n.wordaligner.WordAligner interface.
+ * IBM Model 1 
  * 
  * @author Yuming Kuang
  */
@@ -20,20 +16,19 @@ public class IBMModel1 implements WordAligner {
 
   private static final long serialVersionUID = 1315751943476440515L;
   
-  // TODO: Use arrays or Counters for collecting sufficient statistics
-  // from the training data.
+  // Store t(e|f)
   private CounterMap<String,String> lexicalProb;
-  private double tol = 1e-2;
-  private int maxNumberIter = 30;
+  // Iteration stop criterion threshold for convergence
+  private double tol = 1e-3;
+  // Max number iterations
+  private int maxNumberIter = 1000;
 
   public CounterMap<String, String> getLexicalProb() {
     return lexicalProb;
   }
 
   public Alignment align(SentencePair sentencePair) {
-    // Placeholder code below. 
-    // TODO Implement an inference algorithm for Eq.1 in the assignment
-    // handout to predict alignments based on the counts you collected with train().
+    // Initialization
     Alignment alignment = new Alignment();
     int numSourceWords = sentencePair.getSourceWords().size();
     int numTargetWords = sentencePair.getTargetWords().size();
@@ -65,30 +60,37 @@ public class IBMModel1 implements WordAligner {
     // Initialize
     lexicalProb = new CounterMap<String, String>();
     CounterMap<String, String> oldLexicalProb;
-    double delta = 1;
+    double diff = 1;
     int iter = 0;
-    // Iteration
-    while (delta > tol && iter < maxNumberIter) {
+    // EM Iteration 
+    // Stop if converge or reach max iteration number
+    while (diff > tol && iter < maxNumberIter) {
+      // Initialization
       oldLexicalProb = lexicalProb;
       lexicalProb = new CounterMap<String, String>();
       iter ++;
 
-      // E step
+      // Train on each sentence
       for(SentencePair pair : trainingPairs){
         List<String> targetWords = pair.getTargetWords();
         List<String> sourceWords = pair.getSourceWords();
       
         for (String target : targetWords) {
-          // Compute sum(t(e_i|f_j))
+          // Compute sum of t(e|f) for fixed target word on all source words
           double totalProb = 0;
           for (int srcIndex = -1; srcIndex < sourceWords.size(); srcIndex ++) {
+            // -1 indicates NULL word
             String source = (srcIndex == -1 ? "" : sourceWords.get(srcIndex));
+            // For 1st iteration, initialize with uniform prob
             totalProb += (iter == 1 ? 1 : oldLexicalProb.getCount(source, target));
           }
-          // Update M step
+          // Compute the expectation of alignment and count in new t(e|f) estimate
           for (int srcIndex = -1; srcIndex < sourceWords.size(); srcIndex ++) {
+            // -1 for NULL word
             String source = (srcIndex == -1 ? "" : sourceWords.get(srcIndex));
+            // Initialize with uniform prob for 1st iter
             double increment = (iter == 1 ? 1 : oldLexicalProb.getCount(source, target)) / totalProb; 
+            // Do the increment
             if (lexicalProb.getCount(source, target) == 0.0) {
               lexicalProb.setCount(source, target, increment);
             } else {
@@ -97,18 +99,20 @@ public class IBMModel1 implements WordAligner {
           }   
         }
       }
-      // M step normalize
+      // normalize t(e|f) count to probability
       lexicalProb = Counters.conditionalNormalize(lexicalProb);
       
       // Compute difference
-      delta = iter == 1 ? 1 : computeDiff(lexicalProb, oldLexicalProb);
-      System.out.printf("%f\n", delta);
+      // delta store the mean change of non-zero element in t(e|f)
+      diff = iter == 1 ? 1 : computeDiff(lexicalProb, oldLexicalProb);
+      System.out.printf("Iteration: %d, diff: %f\n", iter, diff);
     } 
   }
 
-  private <K> double computeDiff(CounterMap<K, K> newCnt, CounterMap<K, K> oldCnt) {
-    double delta = 0;
-    int cnt = 0;    
+  // Compute the mean change of non-zero elements of two CounterMap 
+  private <K, V> double computeDiff(CounterMap<K, V> newCnt, CounterMap<K, V> oldCnt) {
+    double diff = 0;   
+    int cnt = 0;
 
     // All keys in two CounterMap
     Set<K> allKey = new HashSet<K>(newCnt.keySet());
@@ -116,16 +120,16 @@ public class IBMModel1 implements WordAligner {
   
     for (K key : allKey) {
       // All values for a key in two CounterMap
-      Set<K> allValue = new HashSet<K>(newCnt.getCounter(key).keySet());
+      Set<V> allValue = new HashSet<V>(newCnt.getCounter(key).keySet());
       allValue.addAll(oldCnt.getCounter(key).keySet());
 
       // Compute difference for each (key, value) pair
-      for (K value : allValue) {
-        delta += Math.abs(newCnt.getCount(key, value) - oldCnt.getCount(key, value));
-        cnt ++;
+      for (V value : allValue) {
+        diff += Math.abs(newCnt.getCount(key, value) - oldCnt.getCount(key, value));
+        cnt++;
       }
     }
 
-    return delta / cnt; 
+    return diff / cnt;
   }
 }
