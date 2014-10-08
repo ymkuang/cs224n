@@ -19,7 +19,7 @@ public class IBMModel1 implements WordAligner {
   // Store t(e|f)
   private CounterMap<String,String> lexicalProb;
   // Iteration stop criterion threshold for convergence
-  private double tol = 1e-3;
+  private double tol = 1e-2;
   // Max number iterations
   private int maxNumberIter = 1000;
 

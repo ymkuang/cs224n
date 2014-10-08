@@ -70,7 +70,7 @@ public class IBMModel2 implements WordAligner {
   // Random number generator
   private Random generator = new Random(17);
   // Convergence threshold
-  private double tol = 1e-3;
+  private double tol = 1e-2;
   // Max number of iterations
   private int maxNumberIter = 1000;
   // Avoid denominator being too small
