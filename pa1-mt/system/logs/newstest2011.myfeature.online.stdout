@@ -1,0 +1,19 @@
+Phrasal Online Tuner
+Startup: Tue Oct 07 20:03:08 PDT 2014
+====================
+ 	newstest2011.fr /afs/ir/class/cs224n/data/pa1/mt/refs/newstest2011/ref0 newstest2011.myfeature.ini cs224n.binwts
+ b	20
+ e	4
+ ef	20
+ m	bleu-smooth
+ n	newstest2011.myfeature
+ o	pro-sgd
+ of	1,5000,50,0.5,Infinity,0.02,adagradl1f,0.1
+ uw	true
+====================
+
+Exception in thread "main" java.lang.RuntimeException: Expected bracketing of option name by '[',']', line: 2 label: Rttable-file]
+	at edu.stanford.nlp.mt.util.IOTools.readConfigFile(IOTools.java:161)
+	at edu.stanford.nlp.mt.Phrasal.loadDecoder(Phrasal.java:1226)
+	at edu.stanford.nlp.mt.tune.OnlineTuner.<init>(OnlineTuner.java:151)
+	at edu.stanford.nlp.mt.tune.OnlineTuner.main(OnlineTuner.java:900)

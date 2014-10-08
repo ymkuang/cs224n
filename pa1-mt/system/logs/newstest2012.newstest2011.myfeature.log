@@ -1,0 +1,5 @@
+Uncaught exception from thread: main
+java.lang.RuntimeException: Expected bracketing of option name by '[',']', line: 2 label: Rttable-file]
+	at edu.stanford.nlp.mt.util.IOTools.readConfigFile(IOTools.java:161)
+	at edu.stanford.nlp.mt.Phrasal.getConfigurationFrom(Phrasal.java:1209)
+	at edu.stanford.nlp.mt.Phrasal.main(Phrasal.java:1297)
