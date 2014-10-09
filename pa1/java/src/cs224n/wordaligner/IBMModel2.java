@@ -138,7 +138,8 @@ public class IBMModel2 implements WordAligner {
     
     CounterMap<String, String> oldLexicalProb;
     CounterMap<TriNumber, Integer> oldAlignProb;
-
+    
+    System.out.printf("IBM Model 2 Training: \n");
     double diffLexical = 1, diffAlign = 1;
     int iter = 0;
     // EM Iteration

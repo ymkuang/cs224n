@@ -57,6 +57,7 @@ public class IBMModel1 implements WordAligner {
   }
 
   public void train(List<SentencePair> trainingPairs) {
+    System.out.printf("IBM Model 1 Training: \n");
     // Initialize
     lexicalProb = new CounterMap<String, String>();
     CounterMap<String, String> oldLexicalProb;
