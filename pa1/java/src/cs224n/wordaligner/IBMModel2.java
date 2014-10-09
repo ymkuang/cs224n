@@ -70,7 +70,7 @@ public class IBMModel2 implements WordAligner {
   // Random number generator
   private Random generator = new Random(17);
   // Convergence threshold
-  private double tol = 1e-2;
+  private double tol = 1e-3;
   // Max number of iterations
   private int maxNumberIter = 1000;
   // Avoid denominator being too small
@@ -138,7 +138,8 @@ public class IBMModel2 implements WordAligner {
     
     CounterMap<String, String> oldLexicalProb;
     CounterMap<TriNumber, Integer> oldAlignProb;
-
+    
+    System.out.printf("IBM Model 2 Training: \n");
     double diffLexical = 1, diffAlign = 1;
     int iter = 0;
     // EM Iteration
