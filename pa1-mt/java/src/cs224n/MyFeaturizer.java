@@ -27,11 +27,34 @@ public class MyFeaturizer implements RuleFeaturizer<IString, String> {
     
 	List<FeatureValue<String>> features = Generics.newLinkedList();
     
-	features.add(new FeatureValue<String>("MyFeature", 1.0));
+//	features.add(new FeatureValue<String>("MyFeature", 1.0));
 	
 	features.add(new FeatureValue<String>(
-		String.format("%s:%d","TGTD",f.targetPhrase.size()),1.0));
-    
+		String.format("%s:%d","TGTD",(f.targetPhrase.size())),1.0));
+  
+	features.add(new FeatureValue<String>(
+		String.format("%s:%d","SOCD",(f.sourcePhrase.size())),1.0));
+	
+	features.add(new FeatureValue<String>(
+                String.format("%s:%d","RULD",(f.sourcePhrase.size()+f.targetPhrase.size())),1.0));  
+	
+	features.add(new FeatureValue<String>(
+		String.format("%s","UTST"), f.numUntranslatedSourceTokens));
+
+/*        if (f.targetPhrase.size()>0)
+	features.add(new FeatureValue<String>(
+                String.format("%s","TGTCap"), (Character.isUpperCase(f.targetPhrase.get(0).toString().charAt(0)) ? 1 : 0)));
+
+        if (f.sourcePhrase.size()>0)
+	features.add(new FeatureValue<String>(
+                String.format("%s","SOCCap"), (Character.isUpperCase(f.sourcePhrase.get(0).toString().charAt(0)) ? 1 : 0)));
+*/
+	if (f.targetPhrase.size()>0 && f.sourcePhrase.size()>0)
+	features.add(new FeatureValue<String>(
+		String.format("%s","SSL"),(f.sourcePhrase.get(0).toString().charAt(0)==f.targetPhrase.get(0).toString().charAt(0)) ? 1 : 0 ));
+
+	
+	
 	return features;
   }
 
