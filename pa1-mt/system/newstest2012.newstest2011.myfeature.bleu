@@ -1,8 +1,8 @@
 Metric: BLEU-4 with 1 references
-BLEU = 15.481, 53.567/22.048/11.158/5.675 (BP=0.936, ratio=0.938 3715/3960)
+BLEU = 0.000, NaN/NaN/NaN/NaN (BP=1.000, ratio=NaN 0/0)
 
 Precision Details:
-	0:1990/3715
-	1:775/3515
-	2:370/3316
-	3:177/3119
+	0:0/0
+	1:0/0
+	2:0/0
+	3:0/0
