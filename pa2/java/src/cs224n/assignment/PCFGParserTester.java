@@ -58,6 +58,7 @@ public class PCFGParserTester {
 		options.put("-data",      "miniTest");
 		options.put("-parser",    "cs224n.assignment.BaselineParser");
 		options.put("-maxLength", "20");
+		options.put("-mode", "1");
 
 		// let command-line options supersede defaults .........................
 		options.putAll(CommandLineUtils.simpleCommandLineParser(args));
@@ -69,10 +70,10 @@ public class PCFGParserTester {
 
 		MAX_LENGTH = Integer.parseInt(options.get("-maxLength"));
 
-		Parser parser;
+		PCFGParser parser;
 		try {
 			Class<?> parserClass = Class.forName(options.get("-parser"));
-			parser = (Parser) parserClass.newInstance();
+			parser = (PCFGParser) parserClass.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -114,7 +115,11 @@ public class PCFGParserTester {
 		else {
 			throw new RuntimeException("Bad data set mode: "+ dataSet+", use miniTest, or treebank."); 
 		}
-		parser.train(trainTrees);
+
+		//mode
+		int mode_run = Integer.parseInt(options.get("-mode"));
+		//System.out.println("Using mode: " + mode_run + " (0 for basic without vertical markovization, 1 for second order markov, 2 for third order markov, 3 for third order vertical + 2nd order horizontal)");
+		parser.train(trainTrees,mode_run);
 		testParser(parser, testTrees);
 	}
 }

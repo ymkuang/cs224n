@@ -18,7 +18,24 @@ public class PCFGParser implements Parser {
         // need to be binarized so that rules are at most binary
         List<Tree<String>> binaryTrainTrees = new ArrayList<Tree<String>>();
         for (Tree<String> trainTree : trainTrees)
-            binaryTrainTrees.add(TreeAnnotations.annotateTree(trainTree));
+            binaryTrainTrees.add(TreeAnnotations.annotateTree(trainTree,0));
+
+        lexicon = new Lexicon(binaryTrainTrees);
+        grammar = new Grammar(binaryTrainTrees);
+
+        baselineParser = new BaselineParser();
+        baselineParser.train(trainTrees);
+    }
+
+    public void train(List<Tree<String>> trainTrees,int mode) {
+        // TODO: before you generate your grammar, the training trees
+        // need to be binarized so that rules are at most binary
+        //mode:
+//	System.out.print("Specified Annotation Mode : "+mode+"\n");
+
+	List<Tree<String>> binaryTrainTrees = new ArrayList<Tree<String>>();
+        for (Tree<String> trainTree : trainTrees)
+            binaryTrainTrees.add(TreeAnnotations.annotateTree(trainTree,mode));
 
         lexicon = new Lexicon(binaryTrainTrees);
         grammar = new Grammar(binaryTrainTrees);

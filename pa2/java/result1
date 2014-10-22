@@ -1,3 +1,5 @@
+[Average]    P: 81.31   R: 75.58   F1: 78.34   EX: 20.65
+
 PCFGParserTester options:
   -parser     : cs224n.assignment.PCFGParser
   -data       : treebank
