@@ -14,8 +14,14 @@ import cs224n.util.Filter;
  * the parser's use, and debinarizing and unannotating them for
  * scoring.
  */
+
+
+
 public class TreeAnnotations {
 
+	//indivator debug mode (only annotate with 2 order markov)
+	public static boolean mode_debug = false;
+		
 	public static Tree<String> annotateTree(Tree<String> unAnnotatedTree) {
 
 		// Currently, the only annotation done is a lossless binarization
@@ -25,9 +31,53 @@ public class TreeAnnotations {
 
 		// TODO : mark nodes with the label of their parent nodes, giving a second
 		// order vertical markov process
+		
+		if (mode_debug) {
+			myPrintTree(unAnnotatedTree);
+			myMarkovizeTree(unAnnotatedTree,"");
+			myPrintTree(unAnnotatedTree);
+			return binarizeTree(unAnnotatedTree);
+		}
+		else {
+			return binarizeTree(myMarkovizeTree(unAnnotatedTree,""));
+		}
 
-		return binarizeTree(unAnnotatedTree);
+	}
 
+
+	private static int myPrintTree(Tree<String> tree) {
+                System.out.print("-> "+tree.getLabel()+":");
+                String label = tree.getLabel();
+
+                if (tree.isLeaf()) {
+                        return 0;
+                }
+                else {
+                        List<Tree<String>> childrenTrees = tree.getChildren();
+                        for (Tree<String> childrenTree : childrenTrees)
+                                myPrintTree(childrenTree);
+                }
+                System.out.print("\n");
+		return 1;
+        }
+
+	private static Tree<String> myMarkovizeTree(Tree<String> tree, String labelParent) {
+		//System.out.print("-> "+tree.getLabel()+":");
+		String label = tree.getLabel();
+
+		if (tree.isLeaf()) {
+			return new Tree<String>(label);
+		}
+		else {
+			List<Tree<String>> childrenTrees = tree.getChildren();
+ 			for (Tree<String> childrenTree : childrenTrees)
+            			childrenTree=myMarkovizeTree(childrenTree,label);
+			tree.setChildren(childrenTrees);
+		}
+		if (labelParent!=""){
+			tree.setLabel(label+"^"+labelParent);
+		}
+		return tree;
 	}
 
 	private static Tree<String> binarizeTree(Tree<String> tree) {
