@@ -42,7 +42,7 @@ public class TreeAnnotations {
 //                      myPrintTree(unAnnotatedTree);
 //                      myMarkovizeTree(unAnnotatedTree,"");
 //                      myPrintTree(unAnnotatedTree);
-                        return binarizeTree(unAnnotatedTree);
+                        return binarizeTree(myMarkovizeTree(unAnnotatedTree,""));
                 }
                 if (mode_run==1) {
                         return (mySecondMarkovizeTree(unAnnotatedTree,""));
@@ -67,7 +67,7 @@ public class TreeAnnotations {
 //			myPrintTree(unAnnotatedTree);
 //			myMarkovizeTree(unAnnotatedTree,"");
 //			myPrintTree(unAnnotatedTree);
-			return binarizeTree(unAnnotatedTree);
+			return binarizeTree(myMarkovizeTree(unAnnotatedTree,""));
 		}
 		if (mode_input==1) {
 			return (mySecondMarkovizeTree(unAnnotatedTree,""));
@@ -117,9 +117,9 @@ public class TreeAnnotations {
 	private static Tree<String> mySecondMarkovizeTree(Tree<String> tree, String labelParent) {
 		String label = tree.getLabel();
                 if (tree.isLeaf())
-			if (labelParent!="")
-                        	return new Tree<String>(label+"^"+labelParent);
-                	else
+			//if (labelParent!="")
+                        //	return new Tree<String>(label+"^"+labelParent);
+                	//else
 				return new Tree<String>(label);
 		if (tree.getChildren().size() == 1) {
                         if (labelParent!="")
@@ -132,16 +132,18 @@ public class TreeAnnotations {
 		}
                 // otherwise, it's a binary-or-more local tree, 
                 // so decompose it into a sequence of binary and unary trees.
-                String intermediateLabel = "@"+label+"->";
+                
+		if (labelParent!=""){
+                        label=label+"^"+labelParent;
+                }
+		
+		String intermediateLabel = "@"+label+"->";
                 Tree<String> intermediateTree;
 		if (mode_run<=2) {
                         intermediateTree = binarizeTreeHelper(tree, 0, intermediateLabel);
                 } else {
                         intermediateTree = binarizeHorizontalTreeHelper(tree, 0, intermediateLabel);
 		}                
-		if (labelParent!=""){
-                        label=label+"^"+labelParent;
-                }
 		return new Tree<String>(label, intermediateTree.getChildren());
         }
 
