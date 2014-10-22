@@ -62,7 +62,7 @@ public class TreeAnnotations {
 
 		// TODO : mark nodes with the label of their parent nodes, giving a second
 		// order vertical markov process
-		
+		mode_run=mode_input;		
 		if (mode_input==0) {
 //			myPrintTree(unAnnotatedTree);
 //			myMarkovizeTree(unAnnotatedTree,"");
