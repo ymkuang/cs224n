@@ -37,7 +37,7 @@ public class TreeAnnotations {
 
                 // TODO : mark nodes with the label of their parent nodes, giving a second
                 // order vertical markov process
-
+//                System.out.print("default mode :" + mode_run + "\n");
                 if (mode_run==0) {
 //                      myPrintTree(unAnnotatedTree);
 //                      myMarkovizeTree(unAnnotatedTree,"");
@@ -63,19 +63,20 @@ public class TreeAnnotations {
 
 		// TODO : mark nodes with the label of their parent nodes, giving a second
 		// order vertical markov process
-		mode_run=mode_input;		
+		mode_run=mode_input;
+//		System.out.println("!!!mode :" + mode_input + "\n");		
 		if (mode_input==0) {
-//			myPrintTree(unAnnotatedTree);
-//			myMarkovizeTree(unAnnotatedTree,"");
-//			myPrintTree(unAnnotatedTree);
 			return binarizeTree(unAnnotatedTree);
 		}
 		if (mode_input==1) {
 			return binarizeTree(myMarkovizeTree(unAnnotatedTree,""));
 		}
-		if (mode_input>=2) {
+		if (mode_input==2) {
                         return (myThirdMarkovizeTree(unAnnotatedTree,"",""));
                 }
+		if (mode_input==3) {
+			return (binarizeTree(myMarkovizeTree(unAnnotatedTree,"","")));
+		}
 		return binarizeTree(unAnnotatedTree);
 	}
 
@@ -114,6 +115,28 @@ public class TreeAnnotations {
 		}
 		return tree;
 	}
+	
+	private static Tree<String> myMarkovizeTree(Tree<String> tree, String labelParent, String labelGrandParent) {
+                //System.out.print("-> "+tree.getLabel()+":");
+                String label = tree.getLabel();
+		List<Tree<String>> childrenTrees;
+                if (tree.isLeaf()) {
+                        return new Tree<String>(label);
+                }
+                else {
+                        childrenTrees = tree.getChildren();
+                        for (Tree<String> childrenTree : childrenTrees)
+                                childrenTree=myMarkovizeTree(childrenTree,label,labelParent);
+                        //tree.setChildren(childrenTrees);
+                }
+                if (labelParent!=""){
+                        label+="^"+labelParent;
+                }
+		if (labelGrandParent!="") {
+			label+="^"+labelGrandParent;
+		}
+                return new Tree<String> (label, childrenTrees);
+        }	
 
 	private static Tree<String> mySecondMarkovizeTree(Tree<String> tree, String labelParent) {
 		String label = tree.getLabel();
