@@ -20,7 +20,7 @@ import cs224n.util.Filter;
 public class TreeAnnotations {
 
 	//indivator debug mode (only annotate with 2 order markov)
-	public static int mode_run = 1; 
+	public static int mode_run = 0; 
 	//0 just log lossless, 1 markov 2nd order, 2 markov 3rd order, 3 markov 3rd order + horizontal 2nd order
 	
 	public static int setMode(int mode) {
