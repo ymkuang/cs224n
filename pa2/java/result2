@@ -5,7 +5,7 @@ PCFGParserTester options:
   -maxLength  : 20
   -path       : /afs/ir/class/cs224n/data/pa2
 
-Using parser: cs224n.assignment.PCFGParser@2ff51d36
+Using parser: cs224n.assignment.PCFGParser@6ce2e687
 Data will be loaded from: /afs/ir/class/cs224n/data/pa2/
 
 Loading training trees...wsj_0200.mrg
@@ -1995,7 +1995,8 @@ Guess:
     (INTJ (UH No))
     (, ,)
     (NP (PRP it))
-    (VP (VBD was) (RB n't)
+    (VP (VBD was)
+      (ADVP (RB n't))
       (NP (NNP Black) (NNP Monday)))
     (. .)))
 
@@ -2009,24 +2010,26 @@ Gold:
       (NP (NNP Black) (NNP Monday)))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 83.33   R: 100.00   F1: 90.91   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (NNP Heavy))
     (VP (VBG selling)
       (PP (IN of)
+        (NP (NNP Standard)
+          (CC &)
+          (NNP Poor) (POS 's)))
+      (S
         (NP
-          (NP (NNP Standard)
-            (CC &)
-            (NNP Poor) (POS 's))
-          (JJ 500-stock) (NN index) (NNS futures)))
-      (PP (IN in)
-        (NP (NNP Chicago)
-          (ADJP (RB relentlessly) (JJ beat))
-          (NNS stocks)))
-      (ADVP (RB downward)))
-    (. .)))
+          (NP (JJ 500-stock) (NN index) (NNS futures))
+          (PP (IN in)
+            (NP (NNP Chicago))))
+        (ADVP (RB relentlessly))
+        (VP (VB beat)
+          (NP (NNS stocks))
+          (ADVP (RB downward)))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -2048,14 +2051,13 @@ Gold:
       (ADVP (RB downward)))
     (. .)))
 
- [Current]    P: 50.00   R: 41.67   F1: 45.45   EX:  0.00 
+ [Current]    P: 50.00   R: 58.33   F1: 53.85   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT The) (NN finger-pointing))
     (VP (VBZ has)
-      (ADVP (RB already))
-      (VP (VBN begun)))
+      (ADJP (RB already) (VBN begun)))
     (. .)))
 
 Gold:
@@ -2067,7 +2069,7 @@ Gold:
       (VP (VBN begun)))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 75.00   R: 60.00   F1: 66.67   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
@@ -2096,7 +2098,8 @@ Guess:
           (PP (IN in)
             (NP (DT a) (NN free-fall))))))
     (, ,)
-    (NP (RB even) (JJ central) (NNS banks))
+    (ADVP (RB even))
+    (NP (JJ central) (NNS banks))
     (VP (MD ca) (RB n't)
       (VP (VB stop)
         (NP (PRP it))))
@@ -2119,7 +2122,7 @@ Gold:
         (NP (PRP it))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 84.62   R: 91.67   F1: 88.00   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -2131,12 +2134,14 @@ Guess:
             (NP (DT a) (NN degree))
             (PP (IN of)
               (NP (NN liquidity)))))
-        (SBAR (IN that)
+        (SBAR
+          (WHNP (WDT that))
           (S
             (VP (VBZ is) (RB not)
-              (ADVP (RB there))
-              (PP (IN in)
-                (NP (DT the) (NN market))))))))
+              (NP
+                (NP (EX there))
+                (PP (IN in)
+                  (NP (DT the) (NN market)))))))))
     (. .) ('' '')))
 
 Gold:
@@ -2159,12 +2164,12 @@ Gold:
                     (NP (DT the) (NN market))))))))))
     (. .) ('' '')))
 
- [Current]    P: 86.67   R: 81.25   F1: 83.87   EX:  0.00 
+ [Current]    P: 76.47   R: 81.25   F1: 78.79   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (JJ Final-hour) (NN trading))
-    (VP (VBD accelerated)
+    (VP (VBN accelerated)
       (PP (TO to)
         (NP
           (NP
@@ -2231,7 +2236,7 @@ Guess:
 (ROOT
   (S
     (NP (DT The) (NNP Dow) (NNP Jones) (NNS industrials))
-    (VP (VBD closed)
+    (VP (VBN closed)
       (PP (IN at)
         (NP (NNP 2569.26))))
     (. .)))
@@ -2274,14 +2279,14 @@ Guess:
     (VP (MD could)
       (VP (VB be)
         (VP (VBN seen)
-          (VP (VBG shaking)
-            (NP (PRP$ their) (NNS heads))
-            (SBAR
-              (WHADVP (WRB when))
-              (S
-                (NP (DT the) (NN news))
-                (VP (VBD flashed))))))))
-    (. .)))
+          (PP (VBG shaking)
+            (NP (PRP$ their) (NNS heads)))
+          (SBAR
+            (WHADVP (WRB when))
+            (S
+              (NP (DT the) (NN news))
+              (VP (VBD flashed))
+              (. .))))))))
 
 Gold:
 (ROOT
@@ -2310,9 +2315,8 @@ Guess:
     (NP (DT the) (NNP Dow))
     (VP (VBD was)
       (PRT (RP down))
-      (NP
-        (QP (RB about) (CD 35))
-        (NNS points)))
+      (PP (IN about)
+        (NP (CD 35) (NNS points))))
     (. .)))
 
 Gold:
@@ -2329,7 +2333,7 @@ Gold:
           (NNS points))))
     (. .)))
 
- [Current]    P: 87.50   R: 87.50   F1: 87.50   EX:  0.00 
+ [Current]    P: 62.50   R: 62.50   F1: 62.50   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -2350,7 +2354,7 @@ Guess:
   (S
     (NP (DT These) (NNS stocks))
     (ADVP (RB eventually))
-    (VP (VBD reopened))
+    (VP (VBN reopened))
     (. .)))
 
 Gold:
@@ -2373,8 +2377,9 @@ Guess:
       (PP (IN from)
         (NP (NNP Wall) (NNP Street) (NNS professionals)))
       (, ,)
-      (PP (VBG including)
-        (NP (JJ computer-guided) (NN program) (NNS traders))))
+      (S
+        (VP (VBG including)
+          (NP (JJ computer-guided) (NN program) (NNS traders)))))
     (. .)))
 
 Gold:
@@ -2393,24 +2398,23 @@ Gold:
             (NP (JJ computer-guided) (NN program) (NNS traders))))))
     (. .)))
 
- [Current]    P: 90.00   R: 81.82   F1: 85.71   EX:  0.00 
+ [Current]    P: 72.73   R: 72.73   F1: 72.73   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (NNS Traders))
     (VP (VBD said)
-      (NP
-        (NP (JJS most))
-        (PP (IN of)
-          (NP (PRP$ their) (JJ major) (JJ institutional) (NNS investors))))
-      (, ,)
-      (PP (IN on)
-        (NP (DT the) (JJ other) (NN hand)))
-      (, ,)
-      (S
-        (VP (VBD sat)
-          (ADJP (JJ tight)))))
-    (. .)))
+      (ADVP (RBS most))
+      (SBAR (IN of)
+        (S
+          (NP (PRP$ their) (JJ major) (JJ institutional) (NNS investors))
+          (, ,)
+          (PP (IN on)
+            (NP (DT the) (JJ other) (NN hand)))
+          (, ,)
+          (VP (VBD sat)
+            (ADJP (JJ tight)))
+          (. .))))))
 
 Gold:
 (ROOT
@@ -2431,7 +2435,7 @@ Gold:
             (ADVP (RB tight))))))
     (. .)))
 
- [Current]    P: 83.33   R: 76.92   F1: 80.00   EX:  0.00 
+ [Current]    P: 63.64   R: 53.85   F1: 58.33   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -2444,7 +2448,7 @@ Guess:
         (NP (DT the) (NNS futures)
           (CC and)
           (NN stock) (NNS markets))))
-    (VP (VBD ripped)
+    (VP (VBN ripped)
       (ADVP (RB apart)))
     (. .)))
 
@@ -2469,12 +2473,10 @@ Guess:
 (ROOT
   (S
     (NP (DT The) (NNS futures) (NN halt))
-    (VP (VBD was)
-      (SBAR (RB even)
-        (S
-          (VP (VBD assailed)
-            (PP (IN by)
-              (NP (NNP Big) (NNP Board) (NN floor) (NNS traders)))))))
+    (VP (VBD was) (RB even)
+      (VP (VBD assailed)
+        (PP (IN by)
+          (NP (NNP Big) (NNP Board) (NN floor) (NNS traders)))))
     (. .)))
 
 Gold:
@@ -2488,18 +2490,19 @@ Gold:
           (NP (NNP Big) (NNP Board) (NN floor) (NNS traders)))))
     (. .)))
 
- [Current]    P: 75.00   R: 85.71   F1: 80.00   EX:  0.00 
+ [Current]    P: 100.00   R: 85.71   F1: 92.31   EX:  0.00 
 Guess:
 (ROOT
   (SINV (`` ``)
     (S
       (NP (PRP It))
-      (VP (VBG screwed)
+      (VP (VBN screwed)
         (NP (NNS things))
         (PRT (RP up))))
     (, ,) ('' '')
-    (VP (VBD said))
-    (NP (CD one) (JJ major) (NN specialist))
+    (VP (VBD said)
+      (NP (CD one)))
+    (NP (JJ major) (NN specialist))
     (. .)))
 
 Gold:
@@ -2515,7 +2518,7 @@ Gold:
     (NP (CD one) (JJ major) (NN specialist))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 66.67   R: 75.00   F1: 70.59   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
@@ -2523,18 +2526,16 @@ Guess:
     (VP (VBD did) (RB n't)
       (ADVP (RB even))
       (VP (VB get)
-        (NP (DT a) (NN chance)
-          (S
-            (VP (TO to)
-              (VP (VB do)
-                (NP (DT the) (NNS programs))
-                (SBAR
-                  (S
-                    (NP (PRP we))
-                    (VP (VBD wanted)
-                      (S
-                        (VP (TO to)
-                          (VP (VB do)))))))))))))
+        (S
+          (NP (DT a) (NN chance))
+          (VP (TO to)
+            (VP (VB do)
+              (NP (DT the) (NNS programs))
+              (S
+                (NP (PRP we))
+                (VP (VBD wanted)
+                  (VP (TO to)
+                    (VP (VBP do))))))))))
     (. .) ('' '')))
 
 Gold:
@@ -2559,7 +2560,7 @@ Gold:
                             (VP (VB do))))))))))))))
     (. .) ('' '')))
 
- [Current]    P: 100.00   R: 94.44   F1: 97.14   EX:  0.00 
+ [Current]    P: 86.67   R: 72.22   F1: 78.79   EX:  0.00 
 Guess:
 (ROOT
   (S (CC But)
@@ -2583,13 +2584,12 @@ Guess:
   (S
     (NP (DT The) (NNP Dow) (NNS industrials))
     (VP (VBD were)
-      (ADVP (IN down)
-        (NP (CD 55) (NNS points)))
+      (PRT (RP down))
+      (NP (CD 55) (NNS points))
       (PP (IN at)
-        (NP
-          (NP (CD 3) (NN p.m.))
-          (PP (IN before)
-            (NP (DT the) (JJ futures-trading) (NN halt))))))
+        (NP (CD 3) (NN p.m.)))
+      (PP (IN before)
+        (NP (DT the) (JJ futures-trading) (NN halt))))
     (. .)))
 
 Gold:
@@ -2605,18 +2605,18 @@ Gold:
         (NP (DT the) (JJ futures-trading) (NN halt))))
     (. .)))
 
- [Current]    P: 80.00   R: 88.89   F1: 84.21   EX:  0.00 
+ [Current]    P: 88.89   R: 88.89   F1: 88.89   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (NNP Big) (NNP Board) (NNP Chairman) (NNP John) (NNP J.) (NNP Phelan))
     (VP (VBD said)
-      (SBAR
-        (S
-          (NP (RB yesterday) (DT the) (NN circuit) (NN breaker))
-          (`` ``)
-          (VP (VBD worked)
-            (ADJP (RB well) (RB mechanically))))))
+      (NP (NN yesterday))
+      (S
+        (NP (DT the) (NN circuit) (NN breaker))
+        (`` ``)
+        (VP (VBD worked)
+          (ADVP (RB well) (RB mechanically)))))
     (. .)))
 
 Gold:
@@ -2634,15 +2634,15 @@ Gold:
             (ADVP (RB mechanically))))))
     (. .)))
 
- [Current]    P: 50.00   R: 40.00   F1: 44.44   EX:  0.00 
+ [Current]    P: 87.50   R: 70.00   F1: 77.78   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (NNS Buyers))
     (VP (VBD stepped)
-      (PP (IN in)
-        (PP (TO to)
-          (NP (DT the) (NNS futures) (NN pit)))))
+      (PRT (RP in))
+      (PP (TO to)
+        (NP (DT the) (NNS futures) (NN pit))))
     (. .)))
 
 Gold:
@@ -2661,20 +2661,20 @@ Guess:
   (S
     (NP (NNS Futures) (NNS traders))
     (VP (VBP say)
-      (SBAR
-        (S
-          (NP (DT the) (NNP S&P))
-          (VP (VBD was)
-            (VP (VBG signaling)
-              (SBAR (IN that)
-                (S
-                  (NP (DT the) (NNP Dow))
-                  (VP (MD could)
-                    (VP (VB fall)
-                      (NP
-                        (QP (RB as) (JJ much) (IN as) (CD 200))
-                        (NNS points)))))))))))
-    (. .)))
+      (S
+        (NP (DT the) (NNP S&P))
+        (VP (VBD was)
+          (VP (VBG signaling)
+            (SBAR
+              (WHNP (WDT that))
+              (S
+                (NP (DT the) (NNP Dow))
+                (VP (MD could)
+                  (VP (VB fall)
+                    (NP
+                      (QP (RB as) (JJ much) (IN as) (CD 200))
+                      (NNS points))))))))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -2697,7 +2697,7 @@ Gold:
                           (NP (CD 200) (NNS points)))))))))))))
     (. .)))
 
- [Current]    P: 93.33   R: 82.35   F1: 87.50   EX:  0.00 
+ [Current]    P: 86.67   R: 76.47   F1: 81.25   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -2706,16 +2706,17 @@ Guess:
     (, ,)
     (NP (JJ small) (NNS investors))
     (VP (VBD began)
-      (VP (VBN ringing)
-        (NP (PRP$ their) (NNS brokers))
-        (, ,)
-        (S
-          (VP (VBG wondering)
-            (SBAR (IN whether)
-              (S
-                (NP (DT another) (NN crash))
-                (VP (VBD had)
-                  (VP (VBN begun)))))))))
+      (S
+        (VP (VBG ringing)
+          (NP (PRP$ their) (NNS brokers))))
+      (, ,)
+      (S
+        (VP (VBG wondering)
+          (SBAR (IN whether)
+            (S
+              (NP (DT another) (NN crash))
+              (VP (VBD had)
+                (VP (VBN begun))))))))
     (. .)))
 
 Gold:
@@ -2739,12 +2740,12 @@ Gold:
                 (VP (VBN begun))))))))
     (. .)))
 
- [Current]    P: 92.86   R: 86.67   F1: 89.66   EX:  0.00 
+ [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
 Guess:
 (ROOT
   (S (`` ``)
     (NP (PRP I))
-    (VP (VBP have)
+    (VP (VB have)
       (NP
         (NP (DT a) (NN hunch))
         (SBAR
@@ -2752,13 +2753,11 @@ Guess:
           (S
             (NP (DT this) (JJ particular) (NN decline) (NN today))
             (VP (VBZ is)
-              (NP
+              (S
                 (NP (NN something))
                 (`` `)
-                (ADJP
-                  (ADJP (RBR more) (JJ ado))
-                  (IN about)
-                  (ADJP (JJR less)))))))))
+                (ADJP (RBR more) (JJ ado)))))))
+      (ADVP (RB about) (RBR less)))
     (. .) ('' ')))
 
 Gold:
@@ -2782,22 +2781,21 @@ Gold:
                     (NP (JJR less))))))))))
     (. .) ('' ')))
 
- [Current]    P: 66.67   R: 62.50   F1: 64.52   EX:  0.00 
+ [Current]    P: 35.71   R: 31.25   F1: 33.33   EX:  0.00 
 Guess:
 (ROOT
   (S (CC And)
     (NP (PRP I))
     (VP (VBP think)
-      (SBAR
-        (S
-          (NP
-            (NP (DT a) (NN lot))
-            (PP (IN of)
-              (NP (NNS people))))
-          (VP (MD will)
-            (VP (VBN harp)
-              (PP (IN on)
-                (NP (NN program) (NN trading))))))))
+      (S
+        (NP
+          (NP (DT a) (NN lot))
+          (PP (IN of)
+            (NP (NNS people))))
+        (VP (MD will)
+          (VP (VBN harp)
+            (PP (IN on)
+              (NP (NN program) (NN trading)))))))
     (. .)))
 
 Gold:
@@ -2817,7 +2815,7 @@ Gold:
                 (NP (NN program) (NN trading))))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 100.00   R: 92.31   F1: 96.00   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -2828,7 +2826,8 @@ Guess:
           (VP (TO to)
             (VP (VB bring)
               (NP (DT the) (NN debate))
-              (ADVP (RB right) (RB back))
+              (ADVP (RB right))
+              (PRT (RP back))
               (PP (TO to)
                 (NP (DT the) (NN forefront))))))))
     (. .) ('' '')))
@@ -2848,7 +2847,7 @@ Gold:
                   (NP (DT the) (NN forefront)))))))))
     (. .) ('' '')))
 
- [Current]    P: 90.91   R: 90.91   F1: 90.91   EX:  0.00 
+ [Current]    P: 83.33   R: 90.91   F1: 86.96   EX:  0.00 
 Guess:
 (ROOT
   (S (CC But)
@@ -2870,17 +2869,17 @@ Guess:
 (ROOT
   (S
     (NP (JJ Stock-index) (NNS futures) (NNS contracts))
-    (VP (VBD settled)
+    (VP (VBN settled)
       (PP (IN at)
         (NP
           (NP
-            (ADJP (RB much) (JJR lower))
-            (NNS prices))
-          (PP (IN than)
             (NP
-              (NP (NNS indexes))
-              (PP (IN of)
-                (NP (DT the) (NN stock) (NN market)))))))
+              (ADJP (RB much) (JJR lower))
+              (NNS prices))
+            (PP (IN than)
+              (NP (NNS indexes))))
+          (PP (IN of)
+            (NP (DT the) (NN stock) (NN market)))))
       (NP (PRP itself)))
     (. .)))
 
@@ -2909,17 +2908,16 @@ Guess:
   (S (CC But)
     (NP (NN nobody))
     (VP (VBZ knows)
-      (PP (IN at)
-        (NP
-          (NP (WP what) (NN level))
-          (SBAR
-            (S
-              (NP (DT the) (NNS futures)
-                (CC and)
-                (NNS stocks))
-              (VP (MD will)
-                (VP (VB open)
-                  (NP (NN today)))))))))
+      (SBAR
+        (WHPP (IN at)
+          (WHNP (WP what) (NN level)))
+        (S
+          (NP (DT the) (NNS futures)
+            (CC and)
+            (NNS stocks))
+          (VP (MD will)
+            (VP (VB open)
+              (NP (NN today)))))))
     (. .)))
 
 Gold:
@@ -2939,7 +2937,7 @@ Gold:
               (NP (NN today)))))))
     (. .)))
 
- [Current]    P: 66.67   R: 72.73   F1: 69.57   EX:  0.00 
+ [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
 Guess:
 (ROOT
   (S
@@ -2950,8 +2948,8 @@ Guess:
       (S
         (NP (PRP$ Our) (JJ systemic) (NN performance))
         (VP (VBD was)
-          (ADJP (JJ good)))))
-    (. .) ('' '')))
+          (ADJP (JJ good)))
+        (. .) ('' '')))))
 
 Gold:
 (ROOT
@@ -2978,10 +2976,9 @@ Guess:
           (NP
             (NP (DT the) (NN performance))
             (PP (IN of)
-              (NP
-                (NP (DT all) (NNS specialists))
-                (PP (IN in)
-                  (NP (DT all) (NNS stocks)))))))))
+              (NP (DT all) (NNS specialists)))))
+        (PP (IN in)
+          (NP (DT all) (NNS stocks)))))
     (. .)))
 
 Gold:
@@ -2999,19 +2996,18 @@ Gold:
               (NP (DT all) (NNS stocks)))))))
     (. .)))
 
- [Current]    P: 83.33   R: 90.91   F1: 86.96   EX:  0.00 
+ [Current]    P: 81.82   R: 81.82   F1: 81.82   EX:  0.00 
 Guess:
 (ROOT
   (FRAG (-LRB- -LRB-)
     (NP (JJ See) (JJ related) (NN story))
     (: :)
-    (NP
-      (NP (`` ``)
+    (NP (`` ``)
+      (NP
         (NP (NNP Fed) (NNP Ready))
         (PP (TO to)
-          (NP (NNP Inject) (NNP Big) (NNPS Funds)))
-        ('' ''))
-      (: --)
+          (NP (NNP Inject) (NNP Big) (NNPS Funds))))
+      ('' '') (: --)
       (NP (NNP WSJ) (NNP Oct.) (CD 16) (, ,) (CD 1989)))
     (-RRB- -RRB-)))
 
@@ -3038,17 +3034,14 @@ Gold:
  [Current]    P: 12.50   R:  7.14   F1:  9.09   EX:  0.00 
 Guess:
 (ROOT
-  (S
-    (NP (RB Just))
-    (VP (VBD thought)
-      (SBAR
-        (S
-          (NP (PRP you))
-          (VP (MD 'd)
-            (VP (VB like)
-              (S
-                (VP (TO to)
-                  (VP (VB know)))))))))
+  (SINV
+    (ADVP (RB Just))
+    (VBD thought)
+    (NP (PRP you))
+    (VP (MD 'd)
+      (VP (VB like)
+        (VP (TO to)
+          (VP (VB know)))))
     (. .)))
 
 Gold:
@@ -3066,7 +3059,7 @@ Gold:
                   (VP (VB know)))))))))
     (. .)))
 
- [Current]    P: 90.91   R: 90.91   F1: 90.91   EX:  0.00 
+ [Current]    P: 85.71   R: 54.55   F1: 66.67   EX:  0.00 
 Guess:
 (ROOT
   (NP (NNP George) (NNP Morton)))
@@ -3080,24 +3073,19 @@ Guess:
 (ROOT
   (S
     (NP
-      (NP (NNS Ports))
+      (NP (NNP Ports))
       (PP (IN of)
-        (NP (NNP Call) (NNP Inc.))))
-    (VP (VBD reached)
-      (SBAR
-        (S
-          (NP (NNS agreements))
-          (VP (TO to)
-            (VP (VB sell)
-              (NP (PRP$ its) (JJ remaining) (CD seven) (NN aircraft))
-              (PP (TO to)
-                (NP
-                  (NP (NNS buyers))
-                  (SBAR
-                    (WHNP (WDT that))
-                    (S
-                      (VP (VBD were) (RB n't)
-                        (VP (VBN disclosed))))))))))))
+        (NP (NNP Call) (NNP Inc.) (VBN reached) (NNS agreements))))
+    (VP (TO to)
+      (VP (VB sell)
+        (NP (PRP$ its) (JJ remaining) (CD seven) (NN aircraft))
+        (PP (TO to)
+          (NP (NNS buyers)))
+        (SBAR
+          (WHNP (WDT that))
+          (S
+            (VP (VBD were)
+              (ADJP (RB n't) (VBN disclosed)))))))
     (. .)))
 
 Gold:
@@ -3124,24 +3112,24 @@ Gold:
                         (VP (VBN disclosed))))))))))))
     (. .)))
 
- [Current]    P: 70.00   R: 73.68   F1: 71.79   EX:  0.00 
+ [Current]    P: 60.00   R: 47.37   F1: 52.94   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (RBR Earlier) (DT the) (NN company))
     (VP (VBD announced)
-      (SBAR
-        (S
-          (NP (PRP it))
-          (VP (MD would)
-            (VP (VB sell)
-              (NP
-                (NP (PRP$ its) (VBG aging) (NN fleet))
-                (PP (IN of)
-                  (NP (NNP Boeing) (NNP Co.) (NNP 707s))))
-              (PP (RB because) (IN of)
-                (NP (VBG increasing) (NN maintenance) (NNS costs))))))))
-    (. .)))
+      (S
+        (NP (PRP it))
+        (VP (MD would)
+          (VP (VB sell)
+            (NP
+              (NP (PRP$ its) (VBG aging) (NN fleet))
+              (PP (IN of)
+                (NP (NNP Boeing) (NNP Co.) (NNP 707s))))
+            (PP (IN because)
+              (PP (IN of)
+                (NP (VBG increasing) (NN maintenance) (NNS costs))))))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -3162,7 +3150,7 @@ Gold:
                 (NP (VBG increasing) (NN maintenance) (NNS costs))))))))
     (. .)))
 
- [Current]    P: 92.86   R: 86.67   F1: 89.66   EX:  0.00 
+ [Current]    P: 85.71   R: 80.00   F1: 82.76   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -3170,11 +3158,10 @@ Guess:
       (NP (NNP Hooker) (POS 's))
       (NN philosophy))
     (VP (VBD was)
-      (S
-        (VP (TO to)
-          (VP (VB build)
-            (CC and)
-            (VB sell)))))
+      (VP (TO to)
+        (VP (VB build)
+          (CC and)
+          (VB sell))))
     (. .)))
 
 Gold:
@@ -3191,17 +3178,16 @@ Gold:
             (VB sell)))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 100.00   R: 85.71   F1: 92.31   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (PRP We))
     (VP (VBP want)
-      (S
-        (VP (TO to)
-          (VP (VB build)
-            (CC and)
-            (VB hold)))))
+      (VP (TO to)
+        (VP (VB build)
+          (CC and)
+          (VB hold))))
     (. .) ('' '')))
 
 Gold:
@@ -3216,25 +3202,25 @@ Gold:
             (VB hold)))))
     (. .) ('' '')))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 100.00   R: 83.33   F1: 90.91   EX:  0.00 
 Guess:
 (ROOT
   (SINV
-    (ADJP (RB Not) (JJ included)
+    (ADVP (RB Not))
+    (VP (VBN included)
       (PP (IN in)
         (NP (DT the) (NN bid))))
-    (VP (VBP are))
-    (NP
+    (VP (VBP are)
       (NP
-        (NP (NNP Bonwit) (NNP Teller))
-        (CC or)
-        (NP (NNP B.) (NNP Altman)
-          (CC &)
-          (NNP Co.)))
-      (, ,)
-      (NP
-        (NP (NNP L.J.) (NNP Hooker) (POS 's))
-        (NN department-store) (NNS chains)))
+        (NP
+          (NP (NNP Bonwit) (NNP Teller))
+          (CC or)
+          (NP (NNP B.) (NNP Altman)
+            (CC &)
+            (NNP Co.)))
+        (, ,)
+        (NP (NNP L.J.) (NNP Hooker) (POS 's))))
+    (NP (NN department-store) (NNS chains))
     (. .)))
 
 Gold:
@@ -3257,7 +3243,7 @@ Gold:
         (NN department-store) (NNS chains)))
     (. .)))
 
- [Current]    P: 90.91   R: 90.91   F1: 90.91   EX:  0.00 
+ [Current]    P: 58.33   R: 63.64   F1: 60.87   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -3287,14 +3273,14 @@ Guess:
 (ROOT
   (S
     (NP (DT The) (NNP Merksamer) (NN chain))
-    (VP (VBZ is)
-      (ADVP (RB currently))
+    (VP (VBZ is) (RB currently)
       (VP (VBG being)
-        (VP (VBN offered)
-          (PP (IN for)
-            (NP (NN sale)))
-          (PP (IN by)
-            (NP (NNP First) (NNP Boston) (NNP Corp))))))
+        (S
+          (VP (VBN offered)
+            (PP (IN for)
+              (NP (NN sale)))
+            (PP (IN by)
+              (NP (NNP First) (NNP Boston) (NNP Corp)))))))
     (. .)))
 
 Gold:
@@ -3311,12 +3297,12 @@ Gold:
             (NP (NNP First) (NNP Boston) (NNP Corp))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 90.00   R: 90.00   F1: 90.00   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
     (S
-      (VP (VBD Managed)
+      (VP (VBG Managed)
         (ADVP (RB properly))))
     (, ,)
     (CC and)
@@ -3352,14 +3338,13 @@ Gold:
 Guess:
 (ROOT
   (S
-    (NP
-      (NP (DT The) (NN week) (POS 's))
-      (NN total))
-    (VP (VBD was)
-      (PRT (RP up))
-      (NP (CD 6.2) (NN %))
-      (PP (IN from)
-        (NP (JJ 274,963) (NNS tons))
+    (NP (DT The) (NN week) (POS 's))
+    (VP (VBP total)
+      (VP (VBD was)
+        (PRT (RP up))
+        (NP (CD 6.2) (NN %))
+        (PP (IN from)
+          (NP (JJ 274,963) (NNS tons)))
         (ADVP
           (NP (DT a) (NN year))
           (RBR earlier))))
@@ -3381,7 +3366,7 @@ Gold:
             (RBR earlier)))))
     (. .)))
 
- [Current]    P: 90.00   R: 90.00   F1: 90.00   EX:  0.00 
+ [Current]    P: 70.00   R: 70.00   F1: 70.00   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -3389,13 +3374,13 @@ Guess:
     (VP (VBD was)
       (NP (JJ 12,006,883) (NNS tons))
       (, ,)
-      (ADVP (IN up)
-        (NP (CD 7.8) (NN %))
-        (PP (IN from)
-          (NP (JJ 11,141,711) (NNS tons))
-          (ADVP
-            (NP (DT a) (NN year))
-            (RBR earlier)))))
+      (PP (IN up)
+        (NP (CD 7.8) (NN %)))
+      (PP (IN from)
+        (NP (JJ 11,141,711) (NNS tons))
+        (ADVP
+          (NP (DT a) (NN year))
+          (RBR earlier))))
     (. .)))
 
 Gold:
@@ -3414,20 +3399,20 @@ Gold:
             (RBR earlier)))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 90.00   R: 90.00   F1: 90.00   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT The) (NNS bills))
     (VP (MD will)
-      (VP (VB be)
-        (UCP
-          (ADJP (JJ dated)
-            (NP (NNP Oct.) (CD 26)))
-          (CC and)
-          (VP (MD will)
-            (VP (VB mature)
-              (NP (NNP Oct.) (CD 25) (, ,) (CD 1990)))))))
+      (VP
+        (VP (VB be)
+          (VP (VBN dated)
+            (NP (NNP Oct.) (CD 26))))
+        (CC and)
+        (VP (MD will)
+          (VP (VB mature)
+            (NP (NNP Oct.) (CD 25) (, ,) (CD 1990))))))
     (. .)))
 
 Gold:
@@ -3446,7 +3431,7 @@ Gold:
           (NP (NNP Oct.) (CD 25) (, ,) (CD 1990)))))
     (. .)))
 
- [Current]    P: 70.00   R: 63.64   F1: 66.67   EX:  0.00 
+ [Current]    P: 90.00   R: 81.82   F1: 85.71   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -3455,10 +3440,9 @@ Guess:
       (VP (VB be)
         (ADJP (JJ available)
           (PP (IN in)
-            (NP
-              (NP (JJ minimum) (NNS denominations))
-              (PP (IN of)
-                (NP ($ $) (CD 10,000))))))))
+            (NP (JJ minimum) (NNS denominations))))
+        (PP (IN of)
+          (NP ($ $) (CD 10,000)))))
     (. .)))
 
 Gold:
@@ -3475,16 +3459,17 @@ Gold:
                 (NP ($ $) (CD 10,000))))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 77.78   R: 70.00   F1: 73.68   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (NNS Bids))
     (VP (MD must)
       (VP (VB be)
-        (VP (VBN received)
+        (VP (VBD received)
           (PP (IN by)
-            (NP (CD 1) (NN p.m.) (NNP EDT) (NNP Thursday)))
+            (NP (CD 1) (NN p.m.)))
+          (NP (NNP EDT) (NNP Thursday))
           (PP
             (PP (IN at)
               (NP (DT the) (NNP Treasury)))
@@ -3515,7 +3500,7 @@ Gold:
                 (NNS branches)))))))
     (. .)))
 
- [Current]    P: 83.33   R: 76.92   F1: 80.00   EX:  0.00 
+ [Current]    P: 76.92   R: 76.92   F1: 76.92   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -3559,14 +3544,13 @@ Guess:
           (PRT (RP up))
           (NP (NN cash) (NNS levels)))
         (CC and)
-        (VP (VB say)
-          (SBAR
-            (S
-              (NP (PRP they))
-              (VP (MD will)
-                (VP (VB be)
-                  (NP (NN buying) (NN stock))
-                  (NP (DT this) (NN week)))))))))
+        (VP (VBP say)
+          (S
+            (NP (PRP they))
+            (VP (MD will)
+              (VP (VB be)
+                (NP (NN buying) (NN stock))
+                (NP (DT this) (NN week))))))))
     (. .)))
 
 Gold:
@@ -3590,24 +3574,23 @@ Gold:
                   (NP (DT this) (NN week)))))))))
     (. .)))
 
- [Current]    P: 86.67   R: 81.25   F1: 83.87   EX:  0.00 
+ [Current]    P: 85.71   R: 75.00   F1: 80.00   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT The) (NNP Boston) (NN firm))
     (VP (VBD said)
-      (SBAR
-        (S
-          (NP (NN stock-fund) (NNS redemptions))
-          (VP (VBD were)
-            (VP (VBG running)
-              (PP (IN at)
-                (NP
-                  (QP (JJR less) (IN than) (NN one-third))
-                  (NP (DT the) (NN level))
-                  (CD two) (NNS years)))
-              (ADVP (RB ago)))))))
-    (. .)))
+      (S
+        (NP (NN stock-fund) (NNS redemptions))
+        (VP (VBD were)
+          (VP (VBG running)
+            (PP (IN at)
+              (NP
+                (QP (JJR less) (IN than) (NN one-third))
+                (NP (DT the) (NN level))
+                (CD two) (NNS years)))
+            (ADVP (RB ago))))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -3629,14 +3612,13 @@ Gold:
                     (RB ago)))))))))
     (. .)))
 
- [Current]    P: 69.23   R: 64.29   F1: 66.67   EX:  0.00 
+ [Current]    P: 66.67   R: 57.14   F1: 61.54   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
     (NP (DT This))
     (VP (VBZ feels)
-      (ADJP
-        (ADJP (JJR more))
+      (ADJP (JJR more)
         (PP (IN like)
           (NP (DT a) (JJ one-shot) (NN deal)))))
     (. .)))
@@ -3652,13 +3634,13 @@ Gold:
         (NP (DT a) (JJ one-shot) (NN deal))))
     (. .)))
 
- [Current]    P: 57.14   R: 66.67   F1: 61.54   EX:  0.00 
+ [Current]    P: 66.67   R: 66.67   F1: 66.67   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (NNS People))
-    (VP (VBP are) (RB n't)
-      (VP (VBG panicking)))
+    (VP (VBP are)
+      (ADJP (RB n't) (JJ panicking)))
     (. .) ('' '')))
 
 Gold:
@@ -3669,7 +3651,7 @@ Gold:
       (VP (VBG panicking)))
     (. .) ('' '')))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 75.00   R: 75.00   F1: 75.00   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -3724,11 +3706,10 @@ Guess:
   (S (CC But)
     (NP (NN fund) (NNS managers))
     (VP (VBP say)
-      (SBAR
-        (S
-          (NP (PRP they))
-          (VP (VBP 're)
-            (ADJP (JJ ready))))))
+      (S
+        (NP (PRP they))
+        (VP (VBP 're)
+          (ADJP (JJ ready)))))
     (. .)))
 
 Gold:
@@ -3743,20 +3724,20 @@ Gold:
             (ADJP (JJ ready))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 100.00   R: 87.50   F1: 93.33   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (JJ Many))
     (VP (VBP have)
-      (VP (VBN raised)
+      (VP (VBD raised)
         (NP
           (NP (NN cash) (NNS levels))
           (, ,)
           (SBAR
             (WHNP (WDT which))
             (S
-              (VP (NN act)
+              (VP (VB act)
                 (PP (IN as)
                   (NP (DT a) (NN buffer)))))))
         (PP (IN against)
@@ -3793,14 +3774,13 @@ Guess:
     (, ,)
     (VP (VBZ holds)
       (NP (NN cash) (NNS positions))
-      (PP (RB well) (IN above)
-        (NP
-          (NP (CD 20) (NN %))
-          (PP (IN in)
-            (NP
-              (NP (JJ several))
-              (PP (IN of)
-                (NP (PRP$ his) (NNS funds))))))))
+      (ADVP (RB well))
+      (PP (IN above)
+        (NP (CD 20) (NN %)))
+      (PP (IN in)
+        (ADJP (JJ several)
+          (PP (IN of)
+            (NP (PRP$ his) (NNS funds))))))
     (. .)))
 
 Gold:
@@ -3825,13 +3805,14 @@ Gold:
             (NP (PRP$ his) (NNS funds))))))
     (. .)))
 
- [Current]    P: 85.71   R: 80.00   F1: 82.76   EX:  0.00 
+ [Current]    P: 84.62   R: 73.33   F1: 78.57   EX:  0.00 
 Guess:
 (ROOT
   (S
-    (NP (RB Not) (DT all) (NNS funds))
+    (ADVP (RB Not))
+    (NP (DT all) (NNS funds))
     (VP (VBP have)
-      (VP (VBN raised)
+      (VP (VBD raised)
         (NP (NN cash) (NNS levels))
         (, ,)
         (PP (IN of)
@@ -3852,24 +3833,23 @@ Gold:
           (NP (NN course)))))
     (. .)))
 
- [Current]    P: 100.00   R: 87.50   F1: 93.33   EX:  0.00 
+ [Current]    P: 75.00   R: 75.00   F1: 75.00   EX:  0.00 
 Guess:
 (ROOT
   (S
-    (NP (WDT That))
+    (NP (DT That))
     (VP (VBD was)
-      (ADVP (RB modestly) (JJR higher))
-      (PP (IN than)
-        (NP
-          (NP (DT the)
-            (QP (CD 8.8) (NN %)
+      (NP
+        (ADJP (RB modestly) (JJR higher)
+          (PP (IN than)
+            (NP (DT the) (CD 8.8) (NN %)
               (CC and)
-              (CD 9.2) (NN %))
-            (NNS levels))
-          (PP (IN in)
-            (NP (NNP August)
-              (CC and)
-              (NNP September)))))
+              (CD 9.2) (NN %))))
+        (NNS levels))
+      (PP (IN in)
+        (NP (NNP August)
+          (CC and)
+          (NNP September)))
       (PP (IN of)
         (NP (CD 1987))))
     (. .)))
@@ -3898,7 +3878,7 @@ Gold:
                   (NP (CD 1987)))))))))
     (. .)))
 
- [Current]    P: 66.67   R: 53.33   F1: 59.26   EX:  0.00 
+ [Current]    P: 54.55   R: 40.00   F1: 46.15   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -3907,17 +3887,15 @@ Guess:
     (NP (JJ persistent) (NNS redemptions))
     (VP (MD would)
       (VP (VB force)
-        (SBAR
-          (S
-            (NP (DT some) (NN fund) (NNS managers))
-            (VP (TO to)
-              (VP (VB dump)
-                (SBAR
-                  (S
-                    (NP (NNS stocks))
-                    (VP (TO to)
-                      (VP (VB raise)
-                        (NP (NN cash))))))))))))
+        (S
+          (NP (DT some) (NN fund) (NNS managers))
+          (VP (TO to)
+            (VP (VB dump)
+              (S
+                (NP (NNS stocks))
+                (VP (TO to)
+                  (VP (VB raise)
+                    (NP (NN cash))))))))))
     (. .)))
 
 Gold:
@@ -3939,24 +3917,24 @@ Gold:
                     (NP (NN cash))))))))))
     (. .)))
 
- [Current]    P: 81.25   R: 92.86   F1: 86.67   EX:  0.00 
+ [Current]    P: 92.86   R: 92.86   F1: 92.86   EX:  0.00 
 Guess:
 (ROOT
   (S (CC But)
-    (NP
-      (NP (DT a) (JJ strong) (NN level))
-      (PP (IN of)
-        (NP (NN investor) (NNS withdrawals))))
-    (VP (VBZ is)
-      (ADJP (RB much) (RBR more) (JJ unlikely))
-      (ADVP
-        (NP (DT this) (NN time))
-        (IN around))
-      (, ,)
-      (SBAR
-        (S
-          (NP (NN fund) (NNS managers))
-          (VP (VBD said)))))
+    (SBAR
+      (S
+        (NP
+          (NP (DT a) (JJ strong) (NN level))
+          (PP (IN of)
+            (NP (NN investor) (NNS withdrawals))))
+        (VP (VBZ is) (RB much)
+          (ADJP (RBR more) (JJ unlikely))
+          (ADVP
+            (NP (DT this) (NN time))
+            (RB around)))))
+    (, ,)
+    (NP (NN fund) (NNS managers))
+    (VP (VBD said))
     (. .)))
 
 Gold:
@@ -3979,18 +3957,18 @@ Gold:
     (VP (VBD said))
     (. .)))
 
- [Current]    P: 69.23   R: 64.29   F1: 66.67   EX:  0.00 
+ [Current]    P: 76.92   R: 71.43   F1: 74.07   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT A) (JJ major) (NN reason))
     (VP (VBZ is)
-      (SBAR (IN that)
+      (SBAR
+        (WHNP (WDT that))
         (S
           (NP (NNS investors))
           (ADVP (RB already))
-          (VP (VBP have)
-            (ADVP (RB sharply))
+          (VP (VBP have) (RB sharply)
             (VP (VBN scaled)
               (PRT (RP back))
               (NP (PRP$ their) (NNS purchases))
@@ -3998,8 +3976,8 @@ Guess:
                 (NP
                   (NP (NN stock) (NNS funds))
                   (PP (IN since)
-                    (NP (NNP Black) (NNP Monday))))))))))
-    (. .)))
+                    (NP (NNP Black) (NNP Monday)))))))
+          (. .))))))
 
 Gold:
 (ROOT
@@ -4023,21 +4001,21 @@ Gold:
                 (NP (NNP Black) (NNP Monday))))))))
     (. .)))
 
- [Current]    P: 82.35   R: 82.35   F1: 82.35   EX:  0.00 
+ [Current]    P: 76.47   R: 76.47   F1: 76.47   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (JJ Many) (NN fund) (NNS managers))
     (VP (VBP argue)
-      (SBAR (IN that)
+      (SBAR
+        (WHNP (WDT that))
         (S
           (ADVP (RB now))
           (VP (VBZ 's)
-            (SBAR
-              (S
-                (NP (DT the) (NN time))
-                (VP (TO to)
-                  (VP (VB buy)))))))))
+            (S
+              (NP (DT the) (NN time))
+              (VP (TO to)
+                (VP (VB buy))))))))
     (. .)))
 
 Gold:
@@ -4063,15 +4041,14 @@ Guess:
   (S
     (NP (JJ Major) (JJ mutual-fund) (NNS groups))
     (VP (VBD said)
-      (SBAR
-        (S
-          (NP (NN phone) (NNS calls))
-          (VP (VBD were)
-            (VP (VBG arriving)
-              (PP (IN at)
-                (NP
-                  (NP (RB twice) (DT the) (JJ normal) (NN weekend))
-                  (NN pace) (NN yesterday))))))))
+      (S
+        (NP (NN phone) (NNS calls))
+        (VP (VBD were)
+          (VP (VBG arriving)
+            (PP (IN at)
+              (NP (RB twice) (DT the)
+                (ADJP (JJ normal))
+                (NN weekend) (NN pace) (NN yesterday)))))))
     (. .)))
 
 Gold:
@@ -4089,7 +4066,7 @@ Gold:
               (NP (NN yesterday)))))))
     (. .)))
 
- [Current]    P: 72.73   R: 72.73   F1: 72.73   EX:  0.00 
+ [Current]    P: 70.00   R: 63.64   F1: 66.67   EX:  0.00 
 Guess:
 (ROOT
   (S (CC But)
@@ -4119,11 +4096,9 @@ Guess:
 (ROOT
   (S
     (NP (NN Trading) (NN volume))
-    (VP (VBD was)
-      (ADVP (RB only) (RB modestly))
-      (ADJP
-        (ADVP (JJR higher) (IN than))
-        (JJ normal)))
+    (VP (VBD was) (RB only)
+      (ADVP (RB modestly))
+      (ADJP (JJR higher) (IN than) (JJ normal)))
     (. .)))
 
 Gold:
@@ -4139,7 +4114,7 @@ Gold:
           (NP (JJ normal)))))
     (. .)))
 
- [Current]    P: 66.67   R: 50.00   F1: 57.14   EX:  0.00 
+ [Current]    P: 60.00   R: 37.50   F1: 46.15   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4168,19 +4143,19 @@ Guess:
   (S
     (NP (PRP They))
     (VP (VBP hope)
-      (S
-        (VP (TO to)
-          (VP (VB avoid)
-            (NP
-              (NP (DT the) (VBN jammed) (NN phone) (NNS lines))
-              (CC and)
-              (NP (JJ other) (NNS snags)))
-            (SBAR (IN that)
-              (S
-                (VP (VBG infuriated)
-                  (NP (DT some) (NN fund) (NNS investors))
-                  (PP (IN in)
-                    (NP (NNP October) (CD 1987))))))))))
+      (VP (TO to)
+        (VP (VB avoid)
+          (NP
+            (NP (DT the) (VBN jammed) (NN phone) (NNS lines))
+            (CC and)
+            (NP (JJ other) (NNS snags)))
+          (SBAR
+            (WHNP (WDT that))
+            (S
+              (VP (VBG infuriated)
+                (NP (DT some) (NN fund) (NNS investors))
+                (PP (IN in)
+                  (NP (NNP October) (CD 1987)))))))))
     (. .)))
 
 Gold:
@@ -4266,14 +4241,14 @@ Guess:
     (NP (NNP East) (NNP Coast) (NNS centers))
     (VP (MD will)
       (VP (VB open)
-        (PP
-          (PP (IN at)
-            (NP
-              (NP (NNP 7:30) (NNP EDT))
-              (NP (DT this) (NN morning))))
-          (, ,) (RB instead)
-          (PP (IN of)
-            (NP (DT the) (JJ normal) (CD 8:30))))))
+        (PP (IN at)
+          (NP
+            (NP (NNP 7:30) (NNP EDT))
+            (NP (DT this) (NN morning))
+            (, ,)
+            (ADVP (RB instead))))
+        (PP (IN of)
+          (NP (DT the) (JJ normal) (NN 8:30)))))
     (. .)))
 
 Gold:
@@ -4297,17 +4272,16 @@ Gold:
 Guess:
 (ROOT
   (S
-    (NP (NNP T.) (NNP Rowe) (NNP Price) (NNP Associates) (NNP Inc.))
-    (VP (VBD increased)
-      (SBAR
-        (S
-          (NP
-            (NP (PRP$ its) (NN staff))
-            (PP (IN of)
-              (NP (NN phone) (NNS representatives))))
-          (VP (TO to)
-            (VP (VB handle)
-              (NP (NN investor) (NNS requests)))))))
+    (NP (NNP T.) (NNP Rowe) (NNP Price) (NNPS Associates) (NNP Inc.))
+    (VP (VBN increased)
+      (S
+        (NP
+          (NP (PRP$ its) (NN staff))
+          (PP (IN of)
+            (NP (NN phone) (NNS representatives))))
+        (VP (TO to)
+          (VP (VB handle)
+            (NP (NN investor) (NNS requests))))))
     (. .)))
 
 Gold:
@@ -4327,13 +4301,14 @@ Gold:
                     (NP (NN investor) (NNS requests))))))))))
     (. .)))
 
- [Current]    P: 66.67   R: 61.54   F1: 64.00   EX:  0.00 
+ [Current]    P: 72.73   R: 61.54   F1: 66.67   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT The) (JJ Baltimore-based) (NN group))
     (VP (VBD noted)
-      (SBAR (IN that)
+      (SBAR
+        (WHNP (WDT that))
         (S
           (NP (DT some) (NNS investors))
           (VP (VBD moved)
@@ -4360,7 +4335,7 @@ Gold:
               (NP (NN money-market) (NNS funds)))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 92.31   R: 100.00   F1: 96.00   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4368,17 +4343,14 @@ Guess:
       (NP (DT an) (JJ unusual) (NN move)))
     (, ,)
     (NP (JJ several) (NNS funds))
-    (VP (VBD moved)
-      (S
-        (VP (TO to)
-          (VP (VB calm)
-            (NP
-              (NP (NNS investors))
-              (PP (IN with)
-                (NP
-                  (NP (NNS recordings))
-                  (PP (IN on)
-                    (NP (PRP$ their) (JJ toll-free) (NN phone) (NNS lines))))))))))
+    (VP (VBN moved)
+      (PP (TO to)
+        (NP
+          (NP (JJ calm) (NNS investors))
+          (PP (IN with)
+            (NP (NNS recordings)))))
+      (PP (IN on)
+        (NP (PRP$ their) (JJ toll-free) (NN phone) (NNS lines))))
     (. .)))
 
 Gold:
@@ -4399,7 +4371,7 @@ Gold:
               (NP (PRP$ their) (JJ toll-free) (NN phone) (NNS lines)))))))
     (. .)))
 
- [Current]    P: 80.00   R: 92.31   F1: 85.71   EX:  0.00 
+ [Current]    P: 75.00   R: 69.23   F1: 72.00   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4425,14 +4397,15 @@ Guess:
 (ROOT
   (S
     (NP (JJ Several) (NN fund) (NNS managers))
-    (VP (VBP expect)
+    (VP (VB expect)
       (NP (DT a) (JJ rough) (NN market))
-      (NP (DT this) (NN morning))
-      (SBAR (IN before)
-        (S
-          (NP (NNS prices))
-          (VP (VBP stabilize)))))
-    (. .)))
+      (S
+        (NP
+          (NP (DT this) (NN morning))
+          (PP (IN before)
+            (NP (NNS prices))))
+        (VP (VB stabilize))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -4448,24 +4421,22 @@ Gold:
           (VP (VBP stabilize)))))
     (. .)))
 
- [Current]    P: 100.00   R: 90.00   F1: 94.74   EX:  0.00 
+ [Current]    P: 70.00   R: 70.00   F1: 70.00   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (NNP Stock) (NNS funds))
     (VP (VBP have)
-      (S
-        (VP (VBD averaged)
-          (NP
-            (NP (DT a) (JJ staggering) (NN gain))
-            (PP (IN of)
-              (NP (CD 25) (NN %))))
-          (PP (IN through)
-            (NP (NNP September)))
-          (, ,)
-          (PP (VBG according)
-            (PP (TO to)
-              (NP (NNP Lipper) (NNP Analytical) (NNPS Services) (NNP Inc)))))))
+      (VP (VBD averaged)
+        (NP (DT a) (JJ staggering) (NN gain))
+        (PP (IN of)
+          (NP (CD 25) (NN %)))
+        (PP (IN through)
+          (NP (NNP September)))
+        (, ,)
+        (PP (VBG according)
+          (PP (TO to)
+            (NP (NNP Lipper) (NNP Analytical) (NNPS Services) (NNP Inc))))))
     (. .)))
 
 Gold:
@@ -4486,7 +4457,7 @@ Gold:
             (NP (NNP Lipper) (NNP Analytical) (NNP Services) (NNP Inc))))))
     (. .)))
 
- [Current]    P: 92.86   R: 100.00   F1: 96.30   EX:  0.00 
+ [Current]    P: 100.00   R: 92.31   F1: 96.00   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
@@ -4519,19 +4490,16 @@ Guess:
     (, ,)
     (NP (NNP Ms.) (NNP Garzarelli))
     (VP (VBD said)
-      (SBAR
-        (S
-          (NP (PRP she))
-          (VP (VBD was)
-            (VP (VBN swamped)
-              (PP (IN with)
-                (NP
-                  (NP (NN phone) (NNS calls))
-                  (PP (IN over)
-                    (NP
-                      (NP (DT the) (NN weekend))
-                      (PP (IN from)
-                        (NP (JJ nervous) (NNS shareholders))))))))))))
+      (NP
+        (NP (PRP she))
+        (VP (VBD was)
+          (VP (VBN swamped)
+            (PP (IN with)
+              (NP (NN phone) (NNS calls))))))
+      (PP (IN over)
+        (NP (DT the) (NN weekend)))
+      (PP (IN from)
+        (NP (JJ nervous) (NNS shareholders))))
     (. .)))
 
 Gold:
@@ -4554,7 +4522,7 @@ Gold:
                 (NP (JJ nervous) (NNS shareholders))))))))
     (. .)))
 
- [Current]    P: 76.47   R: 86.67   F1: 81.25   EX:  0.00 
+ [Current]    P: 78.57   R: 73.33   F1: 75.86   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4564,16 +4532,15 @@ Guess:
         (SBAR (IN If)
           (S
             (NP (PRP they))
-            (DT all)
+            (ADVP (RB all))
             (VP (VBD were)
               (ADJP (JJ bullish)))))
         (, ,)
         (NP (PRP I))
-        (VP (MD 'd)
-          (ADVP (RB really))
+        (VP (MD 'd) (RB really)
           (VP (VB be)
-            (ADJP (JJ upset))))))
-    (. .) ('' '')))
+            (ADJP (JJ upset))))
+        (. .) ('' '')))))
 
 Gold:
 (ROOT
@@ -4596,17 +4563,18 @@ Gold:
               (ADJP (JJ upset)))))))
     (. .) ('' '')))
 
- [Current]    P: 100.00   R: 93.33   F1: 96.55   EX:  0.00 
+ [Current]    P: 92.86   R: 86.67   F1: 89.66   EX:  0.00 
 Guess:
 (ROOT
   (S
-    (S
+    (NP
       (NP (DT This) (NN time))
       (, ,) (`` ``)
-      (NP (PRP I))
-      (VP (VBP do) (RB n't)
-        (VP (VB think))))
-    (NP (PRP we))
+      (S
+        (NP (PRP I))
+        (VP (VBP do) (RB n't)
+          (VP (VB think)
+            (NP (PRP we))))))
     (VP (MD 'll)
       (VP (VB get)
         (NP (DT a) (NN panic) (NN reaction))))
@@ -4628,7 +4596,7 @@ Gold:
                 (NP (DT a) (NN panic) (NN reaction))))))))
     (. .)))
 
- [Current]    P: 70.00   R: 63.64   F1: 66.67   EX:  0.00 
+ [Current]    P: 63.64   R: 63.64   F1: 63.64   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4639,15 +4607,13 @@ Guess:
           (CC and)
           (NN laser) (NNS parts))))
     (VP (VBD said)
-      (SBAR
-        (S
-          (NP (NNS orders))
-          (VP (VBD fell)
-            (PP (IN below)
-              (NP
-                (NP (NNS expectations))
-                (PP (IN in)
-                  (NP (JJ recent) (NNS months)))))))))
+      (S
+        (NP (NNS orders))
+        (VP (VBD fell)
+          (PP (IN below)
+            (NP (NNS expectations)))
+          (PP (IN in)
+            (NP (JJ recent) (NNS months))))))
     (. .)))
 
 Gold:
@@ -4671,7 +4637,7 @@ Gold:
               (NP (JJ recent) (NNS months)))))))
     (. .)))
 
- [Current]    P: 86.67   R: 81.25   F1: 83.87   EX:  0.00 
+ [Current]    P: 100.00   R: 81.25   F1: 89.66   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4680,11 +4646,10 @@ Guess:
     (NP (DT those) (NNS routes))
     (VP (VBP are) (RB n't)
       (VP (VBN expected)
-        (S
-          (VP (TO to)
-            (VP (VB begin)
-              (PP (IN until)
-                (NP (NNP Jan))))))))
+        (VP (TO to)
+          (VP (VB begin)
+            (PP (IN until)
+              (NP (NNP Jan)))))))
     (. .)))
 
 Gold:
@@ -4702,7 +4667,7 @@ Gold:
           (NP (NNP Jan)))))
     (. .)))
 
- [Current]    P: 70.00   R: 70.00   F1: 70.00   EX:  0.00 
+ [Current]    P: 77.78   R: 70.00   F1: 73.68   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4710,8 +4675,8 @@ Guess:
     (, ,)
     (ADVP (RB too))
     (, ,)
-    (VP (VBP are)
-      (ADJP (RB almost) (JJ certain)
+    (VP (VBP are) (RB almost)
+      (ADJP (JJ certain)
         (S
           (VP (TO to)
             (VP (VB arrive)
@@ -4733,25 +4698,22 @@ Gold:
               (ADVP (RB late)))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 88.89   R: 88.89   F1: 88.89   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (PRP It))
     (ADVP (RB also))
-    (VP (VBZ is)
-      (ADJP (JJ sure)
-        (S
-          (VP (TO to)
-            (VP (VB help)
-              (NP
-                (NP (DT the) (NNS machinists))
-                (VP (VBN put)
-                  (S
-                    (VP (VBD added)
-                      (NP (NN pressure))
-                      (PP (IN on)
-                        (NP (DT the) (NN company))))))))))))
+    (VP (VBZ is) (RB sure)
+      (VP (TO to)
+        (VP (VB help)
+          (S
+            (NP (DT the) (NNS machinists))
+            (VP (VB put)
+              (VP (VBD added)
+                (NP (NN pressure))
+                (PP (IN on)
+                  (NP (DT the) (NN company)))))))))
     (. .)))
 
 Gold:
@@ -4772,20 +4734,19 @@ Gold:
                     (NP (DT the) (NN company))))))))))
     (. .)))
 
- [Current]    P: 75.00   R: 85.71   F1: 80.00   EX:  0.00 
+ [Current]    P: 84.62   R: 78.57   F1: 81.48   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
     (NP (PRP I))
     (VP (VBP do) (RB n't)
-      (VP (VB think)
-        (NP (PRP$ their) (NNS customers))
+      (VP (VBP think)
         (S
+          (NP (PRP$ their) (NNS customers))
           (VP (MD would)
             (VP (VB like)
-              (S
-                (NP (PRP it))
-                (ADJP (RB very) (JJ much))))))))
+              (NP (PRP it))
+              (ADVP (RB very) (RB much)))))))
     (. .) ('' '')))
 
 Gold:
@@ -4803,21 +4764,19 @@ Gold:
                 (ADVP (RB very) (RB much))))))))
     (. .) ('' '')))
 
- [Current]    P: 72.73   R: 72.73   F1: 72.73   EX:  0.00 
+ [Current]    P: 100.00   R: 90.91   F1: 95.24   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT No) (NN date))
-    (VP (VBZ has)
-      (ADVP (RB yet))
+    (VP (VBZ has) (RB yet)
       (VP (VBN been)
         (VP (VBN set)
-          (S
-            (VP (TO to)
-              (VP (VB get)
-                (PRT (RP back))
-                (PP (TO to)
-                  (NP (DT the) (NN bargaining) (NN table)))))))))
+          (VP (TO to)
+            (VP (VB get)
+              (PRT (RP back))
+              (PP (TO to)
+                (NP (DT the) (NN bargaining) (NN table))))))))
     (. .)))
 
 Gold:
@@ -4837,7 +4796,7 @@ Gold:
                       (NP (DT the) (NN bargaining) (NN table)))))))))))
     (. .)))
 
- [Current]    P: 91.67   R: 84.62   F1: 88.00   EX:  0.00 
+ [Current]    P: 90.00   R: 69.23   F1: 78.26   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4848,9 +4807,8 @@ Guess:
     (, ,)
     (VP (VBZ has)
       (VP (VBN been)
-        (S
-          (VP (VBG anticipating)
-            (NP (DT a) (JJ speedy) (NN resolution))))))
+        (PP (VBG anticipating)
+          (NP (DT a) (JJ speedy) (NN resolution)))))
     (. .)))
 
 Gold:
@@ -4867,25 +4825,25 @@ Gold:
           (NP (DT a) (JJ speedy) (NN resolution)))))
     (. .)))
 
- [Current]    P: 88.89   R: 100.00   F1: 94.12   EX:  0.00 
+ [Current]    P: 87.50   R: 87.50   F1: 87.50   EX:  0.00 
 Guess:
 (ROOT
   (S
     (ADVP (RB Still))
-    (PRN (, ,)
+    (, ,)
+    (NP (PRP he))
+    (VP (VBD said) (, ,)
       (S
-        (NP (PRP he))
-        (VP (VBD said)))
-      (, ,))
-    (NP (PRP it))
-    (VP (VBZ 's)
-      (ADJP (JJ possible))
-      (SBAR (IN that)
-        (S
-          (NP (DT the) (NN strike))
-          (VP (MD could)
-            (VP (VB last)
-              (ADJP (RB considerably) (JJR longer)))))))
+        (NP (PRP it))
+        (VP (VBZ 's)
+          (ADJP (JJ possible))
+          (SBAR
+            (WHNP (WDT that))
+            (S
+              (NP (DT the) (NN strike))
+              (VP (MD could)
+                (VP (VB last)
+                  (ADJP (RB considerably) (JJR longer)))))))))
     (. .)))
 
 Gold:
@@ -4908,7 +4866,7 @@ Gold:
               (ADVP (RB considerably) (RBR longer)))))))
     (. .)))
 
- [Current]    P: 93.33   R: 93.33   F1: 93.33   EX:  0.00 
+ [Current]    P: 73.33   R: 73.33   F1: 73.33   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
@@ -4939,13 +4897,12 @@ Guess:
     (NP (DT The) (NN union))
     (VP (VBZ is)
       (VP (VBG continuing)
-        (S
-          (VP (TO to)
-            (VP (VB work)
-              (PP (IN through)
-                (NP (PRP$ its) (VBN expired) (NN contract)))
-              (, ,)
-              (ADVP (RB however)))))))
+        (PP (TO to)
+          (NP (NN work)))
+        (PP (IN through)
+          (NP (PRP$ its) (VBN expired) (NN contract)))
+        (, ,)
+        (ADVP (RB however))))
     (. .)))
 
 Gold:
@@ -4963,7 +4920,7 @@ Gold:
         (ADVP (RB however))))
     (. .)))
 
- [Current]    P: 70.00   R: 70.00   F1: 70.00   EX:  0.00 
+ [Current]    P: 77.78   R: 70.00   F1: 73.68   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -4978,7 +4935,8 @@ Guess:
                 (NP (JJ next) (NNP Sunday))))))
         (, ,)
         (CC but)
-        (SBAR (IN that)
+        (SBAR
+          (WHNP (WDT that))
           (S
             (VP (VBZ has)
               (VP (VBN been)
@@ -5008,7 +4966,7 @@ Gold:
             (ADVP (RB indefinitely))))))
     (. .)))
 
- [Current]    P: 64.71   R: 73.33   F1: 68.75   EX:  0.00 
+ [Current]    P: 61.11   R: 73.33   F1: 66.67   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -5033,10 +4991,9 @@ Guess:
       (CC &)
       (NNP Whitney))
     (VP (VBZ is)
-      (NP
-        (NP (DT a) (NN unit))
-        (PP (IN of)
-          (NP (NNP United) (NNPS Technologies) (NNP Inc)))))
+      (NP (DT a) (NN unit))
+      (PP (IN of)
+        (NP (NNP United) (NNPS Technologies) (NNP Inc))))
     (. .)))
 
 Gold:
@@ -5052,7 +5009,7 @@ Gold:
           (NP (NNP United) (NNP Technologies) (NNP Inc)))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 100.00   R: 85.71   F1: 92.31   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -5078,7 +5035,7 @@ Guess:
 (ROOT
   (S
     (NP (NNP Bridget) (NNP O'Brian))
-    (VP (VBD contributed)
+    (VP (VBN contributed)
       (PP (TO to)
         (NP (DT this) (NN article))))
     (. .)))
@@ -5147,12 +5104,11 @@ Guess:
     (S
       (NP (PRP$ Our) (JJ long) (NN suit))
       (VP (VBZ is)
-        (SBAR
-          (S
-            (NP (PRP$ our) (JJ proven) (NN ability))
-            (VP (TO to)
-              (VP (VB operate) ('' '')
-                (NP (NN power) (NNS plants))))))))
+        (S
+          (NP (PRP$ our) (JJ proven) (NN ability))
+          (VP (TO to)
+            (VP (VB operate) ('' '')
+              (NP (NN power) (NNS plants)))))))
     (, ,)
     (NP (PRP he))
     (VP (VBD said))
@@ -5174,25 +5130,24 @@ Gold:
     (VP (VBD said))
     (. .)))
 
- [Current]    P: 75.00   R: 81.82   F1: 78.26   EX:  0.00 
+ [Current]    P: 81.82   R: 81.82   F1: 81.82   EX:  0.00 
 Guess:
 (ROOT
   (S
-    (NP (JJ Canadian) (NNPS Utilities))
-    (VP (VBZ is) (RB n't)
-      (ADVP (RB alone))
+    (NP (JJ Canadian) (NNS Utilities))
+    (VP (VBZ is)
+      (ADVP (RB n't) (RB alone))
       (PP (IN in)
-        (S
-          (VP (VBG exploring)
-            (NP
-              (NP (NN power) (NN generation) (NNS opportunities))
-              (PP (IN in)
-                (NP (NNP Britain)))
-              (, ,)
-              (PP (IN in)
-                (NP (NN anticipation))))
-            (PP (IN of)
-              (NP (DT the) (NN privatization) (NN program)))))))
+        (NP
+          (NP
+            (NP (VBG exploring) (NN power) (NN generation) (NNS opportunities))
+            (PP (IN in)
+              (NP (NNP Britain)))
+            (, ,)
+            (PP (IN in)
+              (NP (NN anticipation))))
+          (PP (IN of)
+            (NP (DT the) (NN privatization) (NN program))))))
     (. .)))
 
 Gold:
@@ -5216,20 +5171,20 @@ Gold:
                   (NP (DT the) (NN privatization) (NN program)))))))))
     (. .)))
 
- [Current]    P: 80.00   R: 75.00   F1: 77.42   EX:  0.00 
+ [Current]    P: 64.29   R: 56.25   F1: 60.00   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT The) (NN company))
     (VP (VBD said)
-      (SBAR
-        (S
-          (NP (DT the) (NN improvement))
-          (VP (VBZ is)
-            (ADJP (VBN related)
-              (PP (TO to)
-                (NP (JJ additional) (NN cogeneration) (NNS facilities))))
-            (SBAR (IN that)
+      (S
+        (NP (DT the) (NN improvement))
+        (VP (VBZ is)
+          (VP (VBN related)
+            (PP (TO to)
+              (NP (JJ additional) (NN cogeneration) (NNS facilities)))
+            (SBAR
+              (WHNP (WDT that))
               (S
                 (VP (VBP have)
                   (VP (VBN been)
@@ -5300,13 +5255,12 @@ Guess:
 (ROOT
   (S
     (PP (IN In)
-      (NP
-        (NP (DT a) (NNP Centennial) (NNP Journal) (NN article))
-        (NP (NNP Oct.) (CD 5))))
+      (NP (DT a) (NNP Centennial) (NNP Journal) (NN article)))
+    (NP (NNP Oct.) (CD 5))
     (, ,)
     (NP (DT the) (NNS fares))
     (VP (VBD were)
-      (ADJP (JJ reversed)))
+      (VP (VBD reversed)))
     (. .)))
 
 Gold:
@@ -5321,21 +5275,18 @@ Gold:
       (VP (VBN reversed)))
     (. .)))
 
- [Current]    P: 62.50   R: 71.43   F1: 66.67   EX:  0.00 
+ [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
 Guess:
 (ROOT
   (S
-    (NP (NNP Diamond) (NNP Shamrock) (NNP Offshore) (NNP Partners))
+    (NP (NNP Diamond) (NNP Shamrock) (NNP Offshore) (NNPS Partners))
     (VP (VBD said)
-      (SBAR
-        (S
-          (NP (PRP it))
-          (VP (VBD had)
-            (VP (VBN discovered)
-              (NP (NN gas))
-              (ADVP (RB offshore))
-              (NP (NNP Louisiana)))))))
-    (. .)))
+      (S
+        (NP (PRP it))
+        (VP (VBD had)
+          (VP (VBD discovered)
+            (NP (NN gas) (NNP offshore) (NNP Louisiana))))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -5352,7 +5303,7 @@ Gold:
                 (NP (NNP Louisiana))))))))
     (. .)))
 
- [Current]    P: 90.91   R: 90.91   F1: 90.91   EX:  0.00 
+ [Current]    P: 87.50   R: 63.64   F1: 73.68   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -5397,10 +5348,9 @@ Guess:
       (NP (DT a) (NN home) (NN building) (NN company))
       (, ,))
     (VP (VBD declined)
-      (S
-        (VP (TO to)
-          (VP (VB identify)
-            (NP (DT the) (JJ institutional) (NNS investors))))))
+      (VP (TO to)
+        (VP (VB identify)
+          (NP (DT the) (JJ institutional) (NNS investors)))))
     (. .)))
 
 Gold:
@@ -5420,13 +5370,13 @@ Gold:
             (NP (DT the) (JJ institutional) (NNS investors))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 100.00   R: 88.89   F1: 94.12   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
     (NP (PRP We))
     (ADVP (RB usually))
-    (VP (VBP operate)
+    (VP (VB operate)
       (PP (IN in)
         (NP (DT that) (JJ conservative) (NN manner))))
     (. .) ('' '')))
@@ -5492,17 +5442,17 @@ Guess:
   (S
     (NP (DT The) (NN company))
     (VP (VBD outpaced)
-      (ADVP (RB much))
-      (PP (IN of)
-        (NP (DT the) (NN chemical) (NN industry)))
-      (SBAR (IN as)
+      (SBAR (RB much) (IN of)
         (S
-          (NP (JJ annual) (NN profit))
+          (NP
+            (NP (DT the) (NN chemical) (NN industry))
+            (PP (IN as)
+              (NP (JJ annual) (NN profit))))
           (VP (VBD grew)
-            (ADJP (RB fivefold)
-              (PP (IN in)
-                (NP (CD two) (NNS years))))))))
-    (. .)))
+            (ADVP (RB fivefold))
+            (PP (IN in)
+              (NP (CD two) (NNS years))))
+          (. .))))))
 
 Gold:
 (ROOT
@@ -5522,22 +5472,21 @@ Gold:
               (NP (CD two) (NNS years)))))))
     (. .)))
 
- [Current]    P: 84.62   R: 78.57   F1: 81.48   EX:  0.00 
+ [Current]    P: 69.23   R: 64.29   F1: 66.67   EX:  0.00 
 Guess:
 (ROOT
   (S (CC But)
     (ADVP (RB now))
     (NP (NNS prices))
     (VP (VBP have)
-      (SBAR
-        (S
-          (NP
-            (NP (NNP nose-dived)
-              (CC and)
-              (NNP Quantum) (POS 's))
-            (NN profit))
-          (VP (VBZ is)
-            (VP (VBG plummeting))))))
+      (S
+        (NP
+          (NP (NNP nose-dived)
+            (CC and)
+            (NNP Quantum) (POS 's))
+          (NN profit))
+        (VP (VBZ is)
+          (VP (VBG plummeting)))))
     (. .)))
 
 Gold:
@@ -5557,22 +5506,20 @@ Gold:
         (VP (VBG plummeting))))
     (. .)))
 
- [Current]    P: 50.00   R: 45.45   F1: 47.62   EX:  0.00 
+ [Current]    P: 55.56   R: 45.45   F1: 50.00   EX:  0.00 
 Guess:
 (ROOT
   (S
-    (NP
-      (NP (NN Pricing) (NNS cycles))
-      (, ,)
-      (SBAR
-        (S
-          (VP (TO to)
-            (VP (VB be)
-              (ADJP (JJ sure))))))
-      (, ,))
+    (NP (NN Pricing) (NNS cycles))
+    (, ,)
+    (S
+      (VP (TO to)
+        (VP (VB be)
+          (ADJP (JJ sure)))))
+    (, ,)
     (VP (VBP are)
-      (NP (NN nothing) (JJ new))
-      (PP (IN for)
+      (NP (NN nothing))
+      (PP (JJ new) (IN for)
         (NP (NNS plastics) (NNS producers))))
     (. .)))
 
@@ -5594,7 +5541,7 @@ Gold:
         (NP (NNS plastics) (NNS producers))))
     (. .)))
 
- [Current]    P: 83.33   R: 83.33   F1: 83.33   EX:  0.00 
+ [Current]    P: 90.00   R: 75.00   F1: 81.82   EX:  0.00 
 Guess:
 (ROOT
   (SINV (`` ``)
@@ -5605,16 +5552,14 @@ Guess:
           (NP (DT all) (JJ wonderful) (NNS heroes))
           (JJ last) (NN year))))
     (, ,) ('' '')
-    (VP (VBZ says))
-    (NP
+    (VP (VBZ says)
       (NP (DT an) (NN executive))
       (PP (IN at)
         (NP
           (NP (CD one))
           (PP (IN of)
-            (NP
-              (NP (NNP Quantum) (POS 's))
-              (NNS competitors))))))
+            (NP (NNP Quantum) (POS 's))))))
+    (NP (NNS competitors))
     (. .)))
 
 Gold:
@@ -5638,7 +5583,7 @@ Gold:
               (NNS competitors))))))
     (. .)))
 
- [Current]    P: 86.67   R: 86.67   F1: 86.67   EX:  0.00 
+ [Current]    P: 50.00   R: 46.67   F1: 48.28   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
@@ -5674,13 +5619,11 @@ Guess:
     (, ,)
     (NP (NNP Quantum))
     (VP (VBZ has)
-      (VP (VBN claimed)
-        (NP
-          (NP (DT the) (JJS largest) (NN share))
-          (, ,)
-          (ADJP
-            (QP (RB about) (CD 20))
-            (NN %)))))
+      (VP (VBD claimed)
+        (NP (DT the) (JJS largest) (NN share))
+        (, ,)
+        (PP (IN about)
+          (NP (CD 20) (NN %)))))
     (. .)))
 
 Gold:
@@ -5700,7 +5643,7 @@ Gold:
             (NN %)))))
     (. .)))
 
- [Current]    P: 90.00   R: 90.00   F1: 90.00   EX:  0.00 
+ [Current]    P: 77.78   R: 70.00   F1: 73.68   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -5714,11 +5657,10 @@ Guess:
           (NP (PRP$ its) (JJ own) (NNS plants))
           (VP (VB cover)
             (NP
-              (NP
-                (QP (RB only) (IN about) (PDT half)))
-              (PP (IN of)
-                (NP (PRP$ its) (NN ethylene) (NNS needs))))))))
-    (. .)))
+              (QP (RB only) (IN about) (PDT half)))
+            (PP (IN of)
+              (NP (PRP$ its) (NN ethylene) (NNS needs))))
+          (. .))))))
 
 Gold:
 (ROOT
@@ -5739,7 +5681,7 @@ Gold:
                 (NP (PRP$ its) (NN ethylene) (NNS needs))))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 100.00   R: 92.86   F1: 96.30   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -5751,12 +5693,11 @@ Guess:
         (S
           (VP (VBD had)
             (VP (VBN been)
-              (VP (VBG putting)
+              (PP (VBG putting)
                 (PP (IN in)
-                  (NP
-                    (NP (JJ huge) (NNS orders))
-                    (PP (IN for)
-                      (NP (NN polyethylene))))))))))
+                  (NP (JJ huge) (NNS orders))))
+              (PP (IN for)
+                (NP (NN polyethylene)))))))
       (, ,))
     (ADVP (RB abruptly))
     (VP (VBD halted)
@@ -5787,7 +5728,7 @@ Gold:
       (NP (PRP them)))
     (. .)))
 
- [Current]    P: 88.24   R: 88.24   F1: 88.24   EX:  0.00 
+ [Current]    P: 81.25   R: 76.47   F1: 78.79   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
@@ -5820,14 +5761,10 @@ Guess:
 (ROOT
   (S
     (ADVP (RB Now))
-    (NP (NNS producers))
-    (VP (VBP hope)
-      (SBAR
-        (S
-          (NP (NNS prices))
-          (VP (VBP have)
-            (VP (VB hit)
-              (NP (NN bottom)))))))
+    (NP (NNS producers) (NN hope) (NNS prices))
+    (VP (VBP have)
+      (VP (VBD hit)
+        (ADJP (JJ bottom))))
     (. .)))
 
 Gold:
@@ -5844,25 +5781,23 @@ Gold:
               (NP (NN bottom)))))))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 66.67   R: 40.00   F1: 50.00   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (PRP They))
     (ADVP (RB recently))
     (VP (VBD announced)
-      (NP
-        (NP (NNS increases))
-        (PP (IN of)
-          (NP (DT a) (JJ few) (NNS cents))))
-      (SBAR
-        (S
-          (NP (DT a) (NN pound))
-          (VP (TO to)
-            (VP (VB take)
-              (NP (NN effect))
-              (PP (IN in)
-                (NP (DT the) (JJ next) (JJ several) (NNS weeks))))))))
+      (NP (NNS increases))
+      (PP (IN of)
+        (NP (DT a) (JJ few) (NNS cents)))
+      (S
+        (NP (DT a) (NN pound))
+        (VP (TO to)
+          (VP (VB take)
+            (NP (NN effect))
+            (PP (IN in)
+              (NP (DT the) (JJ next) (JJ several) (NNS weeks)))))))
     (. .)))
 
 Gold:
@@ -5886,11 +5821,11 @@ Gold:
                   (NP (DT the) (JJ next) (JJ several) (NNS weeks)))))))))
     (. .)))
 
- [Current]    P: 75.00   R: 70.59   F1: 72.73   EX:  0.00 
+ [Current]    P: 85.71   R: 70.59   F1: 77.42   EX:  0.00 
 Guess:
 (ROOT
   (S
-    (NP (CD One) (NN doubter))
+    (NP (CD One) (NNS doubter))
     (VP (VBZ is)
       (NP
         (NP (NNP George) (NNP Krug))
@@ -5933,27 +5868,24 @@ Gold:
 Guess:
 (ROOT
   (S
-    (S
-      (VP (VBG Noting)
-        (NP
-          (NP (NNS others) (POS '))
-          (NNS estimates))
-        (PP (IN of)
+    (NP (JJ Noting) (NNS others) (POS '))
+    (VP (VBZ estimates)
+      (SBAR (IN of)
+        (S
           (SBAR
             (WHADVP (WRB when))
             (S
               (NP (NN price) (NNS increases))
               (VP (MD can)
                 (VP (VB be)
-                  (VP (VBN sustained)))))))))
-    (, ,)
-    (NP (PRP he))
-    (VP (VBZ remarks) (, ,) (`` ``)
-      (S
-        (NP (DT Some))
-        (VP (VBP say)
-          (NP (NNP October)))))
-    (. .)))
+                  (VP (VBD sustained))))))
+          (, ,)
+          (NP (PRP he))
+          (VP (VBZ remarks) (, ,) (`` ``)
+            (FRAG (DT Some)
+              (INTJ (UH say))
+              (NP (NNP October))))
+          (. .))))))
 
 Gold:
 (ROOT
@@ -5982,7 +5914,7 @@ Gold:
             (NP (NNP October))))))
     (. .)))
 
- [Current]    P: 100.00   R: 90.48   F1: 95.00   EX:  0.00 
+ [Current]    P: 64.71   R: 52.38   F1: 57.89   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -6022,27 +5954,26 @@ Guess:
   (S
     (NP (PRP He))
     (VP (VBZ argues)
-      (SBAR (IN that)
+      (SBAR
+        (WHNP (WDT that))
         (S
-          (NP (NNS efforts))
-          (VP (TO to)
-            (VP (VB firm)
-              (PRT (RP up))
-              (NP (NNS prices)
-                (S
-                  (VP (MD will)
-                    (VP (VB be)
-                      (VP (VBN undermined)
-                        (PP (IN by)
-                          (NP (NNS producers))))))))
-              ('' ')
-              (SBAR
-                (S
-                  (NP (NNS plans))
-                  (VP (TO to)
-                    (VP (VB expand)
-                      (NP (NN production) (NN capacity)))))))))))
-    (. .)))
+          (NP
+            (NP (NNS efforts))
+            (PP (TO to)
+              (NP (NN firm)))
+            (SBAR (IN up)
+              (S
+                (NP (NNS prices))
+                (VP (MD will)
+                  (VP (VB be)
+                    (VP (VBN undermined)
+                      (PP (IN by)
+                        (NP (NNS producers) (POS ')))))))))
+          (VP (VBZ plans)
+            (VP (TO to)
+              (VP (VB expand)
+                (NP (NN production) (NN capacity)))))
+          (. .))))))
 
 Gold:
 (ROOT
@@ -6070,7 +6001,7 @@ Gold:
                           (NP (NN production) (NN capacity)))))))))))))
     (. .)))
 
- [Current]    P:  9.09   R:  9.52   F1:  9.30   EX:  0.00 
+ [Current]    P: 45.45   R: 47.62   F1: 46.51   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -6112,15 +6043,14 @@ Guess:
           (VP (TO to)
             (VP (VB carry)
               (PRT (RP out))
-              (NP (DT a) (JJ three-year) (, ,)
-                (ADJP
-                  (QP ($ $) (CD 1.3) (CD billion))
-                  (NN plant-expansion))
-                (NN program)
-                (S
-                  (VP (VBD started)
-                    (NP (DT this) (NN year))))))))))
-    (. .)))
+              (S
+                (NP (DT a) (JJ three-year) (, ,)
+                  (ADJP
+                    (QP ($ $) (CD 1.3) (CD billion)))
+                  (NN plant-expansion) (NN program))
+                (VP (VBD started)
+                  (NP (DT this) (NN year)))
+                (. .)))))))))
 
 Gold:
 (ROOT
@@ -6141,21 +6071,22 @@ Gold:
                   (NP (DT this) (NN year)))))))))
     (. .)))
 
- [Current]    P: 85.71   R: 85.71   F1: 85.71   EX:  0.00 
+ [Current]    P: 92.86   R: 92.86   F1: 92.86   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP (DT Some) (NNS analysts))
     (VP (VBD saw)
-      (NP (DT the) (NN payment))
-      (SBAR (IN as)
-        (S
-          (NP (DT an) (NN effort))
-          (ADVP (RB also))
-          (VP (TO to)
-            (VP (VB dispel)
-              (NP (NN takeover) (NN speculation)))))))
-    (. .)))
+      (S
+        (NP
+          (NP (DT the) (NN payment))
+          (PP (IN as)
+            (NP (DT an) (NN effort))))
+        (ADVP (RB also))
+        (VP (TO to)
+          (VP (VB dispel)
+            (NP (NN takeover) (NN speculation))))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -6172,21 +6103,20 @@ Gold:
                 (NP (NN takeover) (NN speculation))))))))
     (. .)))
 
- [Current]    P: 72.73   R: 72.73   F1: 72.73   EX:  0.00 
+ [Current]    P: 66.67   R: 72.73   F1: 69.57   EX:  0.00 
 Guess:
 (ROOT
   (S (CC But)
     (NP (NNS others))
-    (VP (VBD came)
-      (ADVP (RB away))
+    (VP (VBD came) (RB away)
       (VP (VBG thinking)
         (S
           (NP (PRP he))
           (VP (VBD had)
-            (PP
-              (PP (VBN given)
-                (NP (NN something)))
-              (CC less)
+            (VP (VBN given)
+              (ADVP
+                (NP (NN something))
+                (RBR less))
               (PP (IN than)
                 (NP (PRP$ his) (JJ usual) (JJ straight-from-the-shoulder) (NN performance))))))))
     (. .)))
@@ -6212,7 +6142,7 @@ Gold:
                         (NP (PRP$ his) (JJ usual) (JJ straight-from-the-shoulder) (NN performance))))))))))))
     (. .)))
 
- [Current]    P: 84.62   R: 64.71   F1: 73.33   EX:  0.00 
+ [Current]    P: 91.67   R: 64.71   F1: 75.86   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -6224,13 +6154,12 @@ Guess:
     (, ,)
     (NP (NNP Quantum))
     (VP (VBZ confronts)
-      (NP
-        (NP (DT a) (NN disaster))
-        (PP (IN at)
-          (NP
-            (NP (PRP$ its) (NN plant))
-            (PP (IN in)
-              (NP (NNP Morris) (, ,) (NNP Ill)))))))
+      (NP (DT a) (NN disaster))
+      (PP (IN at)
+        (NP
+          (NP (PRP$ its) (NN plant))
+          (PP (IN in)
+            (NP (NNP Morris) (, ,) (NNP Ill))))))
     (. .)))
 
 Gold:
@@ -6258,10 +6187,11 @@ Gold:
                 (NP (NNP Ill))))))))
     (. .)))
 
- [Current]    P: 100.00   R: 78.95   F1: 88.24   EX:  0.00 
+ [Current]    P: 100.00   R: 73.68   F1: 84.85   EX:  0.00 
 Guess:
 (ROOT
-  (S (RB Then)
+  (S
+    (ADVP (RB Then))
     (NP (DT a) (JJ second) (NN explosion))
     (VP (VBD occurred))
     (. .)))
@@ -6273,20 +6203,18 @@ Gold:
     (VP (VBD occurred))
     (. .)))
 
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
+ [Current]    P: 75.00   R: 100.00   F1: 85.71   EX:  0.00 
 Guess:
 (ROOT
   (S
-    (NP
-      (NP
-        (NP (CD Two) (NNS workers))
-        (VP (VBN died)))
-      (CC and)
-      (NP (CD six)))
-    (VP (VBP remain)
-      (PP (IN in)
-        (NP (DT the) (NN hospital))))
-    (. .)))
+    (NP (CD Two) (NNS workers))
+    (VP (VBD died)
+      (S (CC and)
+        (NP (CD six))
+        (VP (VB remain)
+          (PP (IN in)
+            (NP (DT the) (NN hospital))))
+        (. .)))))
 
 Gold:
 (ROOT
@@ -6302,7 +6230,7 @@ Gold:
           (NP (DT the) (NN hospital)))))
     (. .)))
 
- [Current]    P: 77.78   R: 77.78   F1: 77.78   EX:  0.00 
+ [Current]    P: 75.00   R: 66.67   F1: 70.59   EX:  0.00 
 Guess:
 (ROOT
   (S
@@ -6348,17 +6276,15 @@ Guess:
     (, ,)
     (NP (DT the) (NN company))
     (VP (VBD had)
-      (VP (VBN been)
-        (S
-          (VP
-            (VP
-              (ADVP (RB steadily))
-              (VBG lowering)
-              (NP (PRP$ its) (NN accident) (NN rate)))
-            (CC and)
-            (VP (VBG picking)
-              (PRT (RP up))
-              (NP (JJ trade-group) (NN safety) (NNS awards)))))))
+      (VP
+        (VP (VBN been)
+          (ADVP (RB steadily))
+          (PP (VBG lowering)
+            (NP (PRP$ its) (NN accident) (NN rate))))
+        (CC and)
+        (VP (VBG picking)
+          (PRT (RP up))
+          (NP (JJ trade-group) (NN safety) (NNS awards)))))
     (. .)))
 
 Gold:
@@ -6381,22 +6307,21 @@ Gold:
             (NP (NN trade-group) (NN safety) (NNS awards))))))
     (. .)))
 
- [Current]    P: 92.86   R: 100.00   F1: 96.30   EX:  0.00 
+ [Current]    P: 84.62   R: 84.62   F1: 84.62   EX:  0.00 
 Guess:
 (ROOT
   (S
     (NP
-      (NP (DT A) (VBN prolonged) (NN production) (NN halt))
+      (NP (DT A) (JJ prolonged) (NN production) (NN halt))
       (PP (IN at)
         (NP (DT the) (NN plant))))
     (VP (MD could)
       (VP (VB introduce)
-        (NP
-          (NP (DT another) (NN imponderable))
-          (PP (IN into)
-            (NP
-              (NP (NNP Quantum) (POS 's))
-              (JJ financial) (NN future))))))
+        (NP (DT another) (NN imponderable))
+        (PP (IN into)
+          (NP
+            (NP (NNP Quantum) (POS 's))
+            (JJ financial) (NN future)))))
     (. .)))
 
 Gold:
@@ -6415,31 +6340,31 @@ Gold:
             (JJ financial) (NN future)))))
     (. .)))
 
- [Current]    P: 91.67   R: 100.00   F1: 95.65   EX:  0.00 
+ [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
 Guess:
 (ROOT
   (S (CC But)
     (NP (DT the) (NNS numbers))
-    (VP (VBP become)
+    (VP (VB become)
       (ADJP
         (ADJP (JJR trickier))
-        (PRN (: --)
-          (CC and)
-          (ADJP (JJ subject)
-            (S
-              (VP (TO to)
-                (VP (VBN dickering)
-                  (PP (IN between)
-                    (NP (NN insured)
-                      (CC and)
-                      (NN insurer)))))))
-          (: --))
-        (SBAR
-          (WHADVP (WRB when))
+        (: --)
+        (CC and)
+        (ADJP (JJ subject)
           (S
-            (NP (NN demand))
-            (VP (VBZ is)
-              (VP (VBG shifting)))))))
+            (VP (TO to)
+              (VP (VBN dickering)
+                (PP (IN between)
+                  (NP (NN insured)
+                    (CC and)
+                    (NN insurer)))))))
+        (: --))
+      (SBAR
+        (WHADVP (WRB when))
+        (S
+          (NP (NN demand))
+          (VP (VBZ is)
+            (VP (VBG shifting))))))
     (. .)))
 
 Gold:
@@ -6468,19 +6393,18 @@ Gold:
             (VP (VBG shifting))))))
     (. .)))
 
- [Current]    P: 72.22   R: 76.47   F1: 74.29   EX:  0.00 
+ [Current]    P: 82.35   R: 82.35   F1: 82.35   EX:  0.00 
 Guess:
 (ROOT
   (S (`` ``)
     (CC And)
     (ADVP (RB then))
-    (NP (PRP you))
-    (VP
-      (ADVP (RB still))
-      (VBP have)
-      (S
-        (VP (TO to)
-          (VP (VB negotiate)))))
+    (NP
+      (NP (PRP you))
+      (ADVP (RB still)))
+    (VP (VBP have)
+      (VP (TO to)
+        (VP (VB negotiate))))
     (. .) ('' '')))
 
 Gold:
@@ -6500,7 +6424,8 @@ Gold:
 Guess:
 (ROOT
   (S
-    (NP (RB Not) (NN everything))
+    (ADVP (RB Not))
+    (NP (NN everything))
     (VP (VBZ looks)
       (ADJP (JJ grim)
         (PP (IN for)
@@ -6517,16 +6442,15 @@ Gold:
         (NP (NNP Quantum))))
     (. .)))
 
- [Current]    P: 83.33   R: 83.33   F1: 83.33   EX:  0.00 
+ [Current]    P: 57.14   R: 66.67   F1: 61.54   EX:  0.00 
 Guess:
 (ROOT
   (S
     (PP (IN By)
-      (NP (NN lifting) (NN ethylene) (NN production)))
+      (NP (VBG lifting) (NN ethylene) (NN production)))
     (, ,)
     (NP (DT the) (NN expansion))
-    (VP (MD will)
-      (ADVP (RB also))
+    (VP (MD will) (RB also)
       (VP (VB lower)
         (NP
           (NP (DT the) (NN company) (POS 's))
@@ -6550,580 +6474,75 @@ Gold:
           (JJ raw) (NN material) (NNS costs))))
     (. .)))
 
- [Current]    P: 88.89   R: 72.73   F1: 80.00   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP (NNP Quantum))
-    (VP (VBZ is)
-      (ADVP (RB also))
-      (VP (VBG tightening)
-        (NP
-          (NP (PRP$ its) (NN grip))
-          (PP (IN on)
-            (NP (PRP$ its) (CD one) (JJ large) (NN business))))
-        (PP (IN outside)
-          (NP
-            (NP (NNS chemicals))
-            (, ,)
-            (NP (NN propane) (NN marketing))))))
-    (. .)))
+ [Current]    P: 87.50   R: 63.64   F1: 73.68   EX:  0.00 
 
-Gold:
-(ROOT
-  (S
-    (NP (NNP Quantum))
-    (VP (VBZ is)
-      (ADVP (RB also))
-      (VP (VBG tightening)
-        (NP
-          (NP (PRP$ its) (NN grip))
-          (PP (IN on)
-            (NP
-              (NP
-                (NP (PRP$ its) (CD one) (JJ large) (NN business))
-                (PP (IN outside)
-                  (NP (NNS chemicals))))
-              (, ,)
-              (NP (NN propane) (NN marketing)))))))
-    (. .)))
-
- [Current]    P: 69.23   R: 64.29   F1: 66.67   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP (NNP Petrolane))
-    (VP (VBZ is)
-      (NP
-        (NP (DT the) (JJ second-largest) (NN propane) (NN distributor))
-        (PP (IN in)
-          (NP (DT the) (NNP U.S.)))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP (NNP Petrolane))
-    (VP (VBZ is)
-      (NP
-        (NP (DT the) (JJ second-largest) (NN propane) (NN distributor))
-        (PP (IN in)
-          (NP (DT the) (NNP U.S.)))))
-    (. .)))
-
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
-Guess:
-(ROOT
-  (S
-    (NP
-      (NP (DT The) (JJS largest))
-      (, ,)
-      (NP (NNP Suburban) (NNP Propane))
-      (, ,))
-    (VP (VBD was)
-      (ADVP (RB already))
-      (VP (VBN owned)
-        (PP (IN by)
-          (NP (NNP Quantum)))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP
-      (NP (DT The) (JJS largest))
-      (, ,)
-      (NP (NNP Suburban) (NNP Propane))
-      (, ,))
-    (VP (VBD was)
-      (ADVP (RB already))
-      (VP (VBN owned)
-        (PP (IN by)
-          (NP (NNP Quantum)))))
-    (. .)))
-
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
-Guess:
-(ROOT
-  (S
-    (ADVP (RB Still))
-    (, ,)
-    (NP (NNP Quantum))
-    (VP (VBZ has)
-      (SBAR
-        (S
-          (NP (DT a) (NN crisis))
-          (VP (TO to)
-            (VP (VB get)
-              (NP (JJ past) (NN right))
-              (ADVP (RB now)))))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (ADVP (RB Still))
-    (, ,)
-    (NP (NNP Quantum))
-    (VP (VBZ has)
-      (NP
-        (NP (DT a) (NN crisis))
-        (SBAR
-          (S
-            (VP (TO to)
-              (VP (VB get)
-                (PP (IN past)))))))
-      (ADVP (RB right) (RB now)))
-    (. .)))
-
- [Current]    P: 45.45   R: 41.67   F1: 43.48   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP (DT Some) (NNS analysts))
-    (VP (VBP speculate)
-      (SBAR
-        (S
-          (NP (DT the) (VBG weakening) (NN stock))
-          (VP (MD may)
-            (ADVP (RB yet))
-            (VP (VB attract)
-              (NP (DT a) (NN suitor)))))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP (DT Some) (NNS analysts))
-    (VP (VBP speculate)
-      (SBAR
-        (S
-          (NP (DT the) (VBG weakening) (NN stock))
-          (VP (MD may)
-            (ADVP (RB yet))
-            (VP (VB attract)
-              (NP (DT a) (NN suitor)))))))
-    (. .)))
-
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
-Guess:
-(ROOT
-  (S (`` ``)
-    (S
-      (NP
-        (NP (DT The) (NNS studies))
-        (-LRB- -LCB-)
-        (PP (IN on)
-          (S
-            (VP (VBG closing)
-              (NP (DT the) (NN unit)))))
-        (-RRB- -RCB-))
-      (VP (MD could) (RB n't)
-        (VP (VB be)
-          (VP (VBN completed)
-            (PP (IN until)
-              (ADVP (RB now)))))))
-    (, ,) ('' '')
-    (NP (PRP he))
-    (VP (VBD said))
-    (. .)))
-
-Gold:
-(ROOT
-  (S (`` ``)
-    (S
-      (NP
-        (NP (DT The) (NNS studies))
-        (PRN (-LRB- -LCB-)
-          (PP (IN on)
-            (S
-              (VP (VBG closing)
-                (NP (DT the) (NN unit)))))
-          (-RRB- -RCB-)))
-      (VP (MD could) (RB n't)
-        (VP (VB be)
-          (VP (VBN completed)
-            (PP (IN until)
-              (NP (RB now)))))))
-    (, ,) ('' '')
-    (NP (PRP he))
-    (VP (VBD said))
-    (. .)))
-
- [Current]    P: 93.33   R: 87.50   F1: 90.32   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP
-      (NP
-        (NP (DT The) (NN group) (POS 's))
-        (NN president))
-      (, ,)
-      (NP (NNP Peter) (NNP Chrisanthopoulos))
-      (, ,))
-    (VP (VBD was) (RB n't)
-      (PP (IN in)
-        (NP (PRP$ his) (NN office)))
-      (SBAR
-        (S
-          (NP (NNP Friday) (NN afternoon))
-          (VP (TO to)
-            (VP (VB comment))))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP
-      (NP
-        (NP (DT The) (NN group) (POS 's))
-        (NN president))
-      (, ,)
-      (NP (NNP Peter) (NNP Chrisanthopoulos))
-      (, ,))
-    (VP (VBD was) (RB n't)
-      (PP (IN in)
-        (NP (PRP$ his) (NN office)))
-      (NP (NNP Friday) (NN afternoon))
-      (S
-        (VP (TO to)
-          (VP (VB comment)))))
-    (. .)))
-
- [Current]    P: 84.62   R: 91.67   F1: 88.00   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP
-      (NP (DT Some))
-      (PP (IN of)
-        (NP (DT these) (NNS countries))))
-    (VP (VBP have)
-      (PP (IN in)
-        (NP (JJ recent) (NNS years)))
-      (S
-        (VP (VBD made)
-          (NP
-            (NP (JJ informal) (NNS agreements))
-            (PP (IN with)
-              (NP (DT the) (NNP U.S.))))
-          (SBAR (IN that)
-            (S
-              (VP (VBP are)
-                (ADJP (JJ similar)
-                  (PP (TO to)
-                    (NP (NNS quotas))))))))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP
-      (NP (DT Some))
-      (PP (IN of)
-        (NP (DT these) (NNS countries))))
-    (VP (VBP have)
-      (PP (IN in)
-        (NP (JJ recent) (NNS years)))
-      (VP (VBD made)
-        (NP
-          (NP (JJ informal) (NNS agreements))
-          (PP (IN with)
-            (NP (DT the) (NNP U.S.)))
-          (SBAR
-            (WHNP (WDT that))
-            (S
-              (VP (VBP are)
-                (ADJP (JJ similar)
-                  (PP (TO to)
-                    (NP (NNS quotas))))))))))
-    (. .)))
-
- [Current]    P: 90.00   R: 90.00   F1: 90.00   EX:  0.00 
-Guess:
-(ROOT
-  (S (CC But)
-    (NP (PRP$ its) (NN quota))
-    (VP (VBZ has)
-      (VP (VBN been)
-        (ADJP
-          (ADJP (RB as) (JJ high))
-          (IN as)
-          (ADJP (CD 6.9) (NN %)))
-        (PP (IN in)
-          (NP (CD 1984)))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S (CC But)
-    (NP (PRP$ its) (NN quota))
-    (VP (VBZ has)
-      (VP (VBN been)
-        (ADJP
-          (ADJP (RB as) (JJ high))
-          (PP (IN as)
-            (NP
-              (NP (CD 6.9) (NN %))
-              (PP (IN in)
-                (NP (CD 1984))))))))
-    (. .)))
-
- [Current]    P: 77.78   R: 63.64   F1: 70.00   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP (NNP Japan))
-    (, ,)
-    (ADVP (RB however))
-    (, ,)
-    (VP (VBZ has)
-      (VP (VBN agreed)
-        (S
-          (VP (TO to)
-            (VP (VB cut)
-              (NP (PRP$ its) (NN quota)
-                (S
-                  (VP (TO to)
-                    (VP
-                      (QP (IN about) (CD 5) (NN %))
-                      (PP (IN from)
-                        (NP (CD 5.9) (NN %)))))))
-              (ADVP (RB previously)))))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP (NNP Japan))
-    (, ,)
-    (ADVP (RB however))
-    (, ,)
-    (VP (VBZ has)
-      (VP (VBN agreed)
-        (S
-          (VP (TO to)
-            (VP (VB cut)
-              (NP (PRP$ its) (NN quota))
-              (PP (TO to)
-                (NP
-                  (QP (RB about) (CD 5))
-                  (NN %)))
-              (PP (IN from)
-                (NP (CD 5.9) (NN %))
-                (ADVP (RB previously))))))))
-    (. .)))
-
- [Current]    P: 62.50   R: 66.67   F1: 64.52   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP (DT The) (NN balance))
-    (VP (VBZ is)
-      (VP (VBN supplied)
-        (PP (IN by)
-          (NP
-            (NP (DT a) (NN host))
-            (PP (IN of)
-              (NP (JJR smaller) (NNS exporters)))
-            (, ,)
-            (PP (JJ such) (IN as)
-              (NP (NNP Australia)
-                (CC and)
-                (NNP Venezuela)))))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP (DT The) (NN balance))
-    (VP (VBZ is)
-      (VP (VBN supplied)
-        (PP (IN by)
-          (NP
-            (NP (DT a) (NN host))
-            (PP (IN of)
-              (NP
-                (NP (JJR smaller) (NNS exporters))
-                (, ,)
-                (PP (JJ such) (IN as)
-                  (NP (NNP Australia)
-                    (CC and)
-                    (NNP Venezuela)))))))))
-    (. .)))
-
- [Current]    P: 90.91   R: 83.33   F1: 86.96   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP (NN Revenue))
-    (VP (VBD totaled)
-      (NP
-        (QP ($ $) (CD 5) (CD million))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP (NN Revenue))
-    (VP (VBD totaled)
-      (NP
-        (QP ($ $) (CD 5) (CD million))))
-    (. .)))
-
- [Current]    P: 100.00   R: 100.00   F1: 100.00   EX: 100.00 
-Guess:
-(ROOT
-  (SINV
-    (ADVP (RB Foremost))
-    (PP (IN among)
-      (NP (DT those)))
-    (VBZ is)
-    (NP
-      (NP
-        (NP
-          (NP (DT the) (NN company) (POS 's))
-          (NN entrance))
-        (PP (IN into)
-          (NP (DT the) (JJ public) (JJ facsimile) (NN business))))
-      (, ,)
-      (NP (NNP Mr.) (NNP Pierce)))
-    (VP (VBD said))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (SINV
-      (ADJP (RB Foremost))
-      (PP (IN among)
-        (NP (DT those)))
-      (VP (VBZ is))
-      (NP
-        (NP
-          (NP (DT the) (NN company) (POS 's))
-          (NN entrance))
-        (PP (IN into)
-          (NP (DT the) (JJ public) (NN facsimile) (NN business)))))
-    (, ,)
-    (NP (NNP Mr.) (NNP Pierce))
-    (VP (VBD said))
-    (. .)))
-
- [Current]    P: 75.00   R: 69.23   F1: 72.00   EX:  0.00 
-Guess:
-(ROOT
-  (S
-    (NP (NNP Elcotel))
-    (VP (MD will)
-      (VP (VB provide)
-        (NP
-          (NP (DT a) (NN credit-card) (NN reader))
-          (PP (IN for)
-            (NP
-              (NP (DT the) (NNS machines)
-                (S
-                  (VP (TO to)
-                    (VP (VB collect)))))
-              (, ,)
-              (NP (NN store))
-              (CC and)
-              (NP (JJ forward) (NN billing) (NNS data)))))))
-    (. .)))
-
-Gold:
-(ROOT
-  (S
-    (NP (NNP Elcotel))
-    (VP (MD will)
-      (VP (VB provide)
-        (NP
-          (NP (DT a) (NN credit-card) (NN reader))
-          (SBAR (IN for)
-            (S
-              (NP (DT the) (NNS machines))
-              (VP (TO to)
-                (VP (VB collect) (, ,) (VB store)
-                  (CC and)
-                  (VB forward)
-                  (NP (NN billing) (NNS data)))))))))
-    (. .)))
-
- [Current]    P: 42.86   R: 50.00   F1: 46.15   EX:  0.00 
- [Average]    P: 83.71   R: 81.33   F1: 82.50   EX: 32.26 
-
-Flat profile of 1195.91 secs (82074 total ticks): main
+Flat profile of 1061.14 secs (94413 total ticks): main
 
   Interpreted + native   Method                        
-  0.2%   124  +     0    java.util.HashMap.resize
-  0.1%    76  +     0    java.util.HashMap$HashIterator.<init>
-  0.1%    74  +     0    java.util.HashMap.newKeyIterator
-  0.0%    20  +     0    java.util.HashMap$KeyIterator.<init>
-  0.0%    20  +     0    cs224n.assignment.PCFGParser.getBestParse
-  0.0%     0  +    19    java.io.UnixFileSystem.getBooleanAttributes0
-  0.0%     0  +    13    java.io.FileOutputStream.writeBytes
-  0.0%    13  +     0    cs224n.assignment.PCFGParser.addUnaryRule
-  0.0%     0  +    12    java.lang.Object.hashCode
-  0.0%    11  +     0    java.util.HashMap$KeySet.<init>
-  0.0%     9  +     0    cs224n.assignment.Grammar.<init>
-  0.0%     8  +     0    cs224n.assignment.TreeAnnotations.binarizeTreeHelper
-  0.0%     1  +     6    java.io.FileInputStream.open
-  0.0%     7  +     0    java.util.Arrays.copyOfRange
-  0.0%     6  +     0    cs224n.assignment.PCFGParser.train
-  0.0%     6  +     0    cs224n.assignment.TreeAnnotations.binarizeTree
-  0.0%     0  +     5    java.lang.String.intern
-  0.0%     5  +     0    java.util.HashMap$KeySet.iterator
-  0.0%     5  +     0    cs224n.assignment.Grammar.tallyTree
-  0.0%     0  +     4    java.lang.Object.getClass
+  0.2%   232  +     0    cs224n.assignment.PCFGParser.getBestParse
+  0.2%   191  +     0    java.util.HashMap.resize
+  0.0%    18  +     0    cs224n.assignment.Grammar.tallyTree
+  0.0%     0  +    17    java.io.UnixFileSystem.getBooleanAttributes0
+  0.0%    16  +     0    cs224n.assignment.Grammar.<init>
+  0.0%     0  +    15    java.lang.Object.hashCode
+  0.0%     0  +    13    java.io.UnixFileSystem.list
+  0.0%    12  +     0    cs224n.assignment.TreeAnnotations.binarizeTree
+  0.0%     0  +     9    java.io.FileInputStream.open
+  0.0%     9  +     0    java.util.HashMap.newKeyIterator
+  0.0%     9  +     0    cs224n.assignment.PCFGParser.train
+  0.0%     8  +     0    java.util.HashMap.inflateTable
+  0.0%     0  +     7    java.io.FileInputStream.readBytes
+  0.0%     0  +     7    java.io.FileOutputStream.writeBytes
+  0.0%     0  +     6    java.lang.Object.getClass
+  0.0%     5  +     0    java.util.Arrays.copyOfRange
+  0.0%     5  +     0    cs224n.assignment.TreeAnnotations.binarizeTreeHelper
   0.0%     4  +     0    java.lang.AbstractStringBuilder.<init>
-  0.0%     4  +     0    java.lang.String.toCharArray
-  0.0%     4  +     0    cs224n.ling.Tree.appendYield
-  0.0%     4  +     0    cs224n.assignment.TreeAnnotations.myMarkovizeTree
-  0.0%     3  +     0    java.util.HashMap$KeyIterator.<init>
-  0.7%   480  +    69    Total interpreted (including elided)
+  0.0%     4  +     0    cs224n.util.CollectionUtils.addToValueList
+  0.0%     4  +     0    cs224n.ling.Trees$XOverXRemover.transformTree
+  0.0%     4  +     0    java.lang.StringCoding$StringEncoder.encode
+  0.0%     3  +     0    cs224n.assignment.TreeAnnotations.annotateTree
+  0.0%     3  +     0    java.util.HashMap.roundUpToPowerOf2
+  0.0%     3  +     0    java.io.BufferedReader.<init>
+  0.0%     3  +     0    cs224n.ling.Tree.appendPreTerminalYield
+  0.7%   594  +    78    Total interpreted (including elided)
 
      Compiled + native   Method                        
- 68.3% 55994  +    58    cs224n.assignment.PCFGParser.getBestParse
- 13.5% 10892  +   167    cs224n.assignment.PCFGParser.addUnaryRule
- 12.9% 10612  +     0    java.util.HashMap.put
-  3.4%  2749  +    40    java.util.HashMap.resize
-  0.2%   161  +     1    cs224n.util.Counter.incrementCount
-  0.1%    93  +     0    java.util.HashMap.transfer
-  0.1%     0  +    85    java.util.HashMap.createEntry
-  0.1%    63  +     0    cs224n.ling.Tree.appendYield
-  0.0%    33  +     2    cs224n.assignment.Grammar.tallyTree
-  0.0%    27  +     0    cs224n.assignment.TreeAnnotations.myMarkovizeTree
-  0.0%    24  +     0    cs224n.ling.Tree.appendPreTerminalYield
-  0.0%    19  +     0    cs224n.assignment.Lexicon.scoreTagging
-  0.0%    16  +     0    cs224n.assignment.Lexicon.tallyTagging
-  0.0%    12  +     0    cs224n.assignment.TreeAnnotations.binarizeTreeHelper
-  0.0%     6  +     1    cs224n.assignment.TreeAnnotations.binarizeTree
-  0.0%     0  +     4    java.lang.Object.<init>
-  0.0%     4  +     0    cs224n.util.CounterMap.incrementCount
-  0.0%     4  +     0    cs224n.ling.Trees$PennTreeReader.readTree
-  0.0%     3  +     1    cs224n.ling.Trees$EmptyNodeStripper.transformTree
-  0.0%     3  +     0    java.util.HashMap.hash
-  0.0%     2  +     0    cs224n.ling.Trees$TreeReader.readText
-  0.0%     2  +     0    cs224n.ling.Trees$XOverXRemover.transformTree
-  0.0%     1  +     0    UncommonTrapBlob
-  0.0%     1  +     0    cs224n.assignment.Lexicon.isKnown
-  0.0%     0  +     1    java.lang.StringBuilder.toString
- 98.8% 80725  +   361    Total compiled (including elided)
+ 72.9% 68770  +    45    cs224n.assignment.PCFGParser.getBestParse
+ 19.0% 17973  +     0    java.util.HashMap.get
+  4.7%  4433  +    32    java.util.HashMap.put
+  1.8%  1687  +    16    java.util.HashMap.resize
+  0.1%   108  +     0    java.util.HashMap.transfer
+  0.1%    79  +     4    cs224n.ling.Tree.appendYield
+  0.1%    52  +     2    cs224n.assignment.Grammar.tallyTree
+  0.0%    30  +     1    cs224n.util.Counter.incrementCount
+  0.0%    21  +     1    cs224n.assignment.TreeAnnotations.binarizeTreeHelper
+  0.0%    21  +     0    cs224n.ling.Tree.appendPreTerminalYield
+  0.0%    12  +     0    cs224n.assignment.Lexicon.<init>
+  0.0%     6  +     0    cs224n.assignment.Lexicon.isKnown
+  0.0%     0  +     5    java.lang.Double.valueOf
+  0.0%     3  +     0    cs224n.util.CounterMap.incrementCount
+  0.0%     1  +     1    cs224n.ling.Trees$EmptyNodeStripper.transformTree
+  0.0%     2  +     0    cs224n.ling.Trees$FunctionNodeStripper.transformTree
+  0.0%     0  +     1    java.lang.Object.<init>
+  0.0%     1  +     0    java.util.HashMap.hash
+  0.0%     1  +     0    cs224n.assignment.TreeAnnotations.binarizeTree
+  0.0%     1  +     0    cs224n.assignment.TreeAnnotations.mySecondMarkovizeTree
+ 98.8% 93201  +   108    Total compiled
 
          Stub + native   Method                        
-  0.5%     0  +   384    java.lang.String.intern
-  0.0%     0  +    41    java.lang.Object.hashCode
-  0.0%     0  +    10    java.lang.System.arraycopy
-  0.0%     0  +     2    java.lang.Thread.currentThread
-  0.5%     0  +   437    Total stub
+  0.4%     0  +   380    java.lang.String.intern
+  0.0%     0  +    34    java.lang.Object.hashCode
+  0.0%     0  +    16    java.lang.System.arraycopy
+  0.0%     0  +     1    java.lang.Thread.currentThread
+  0.5%     0  +   431    Total stub
 
   Thread-local ticks:
-  0.0%     2             Class loader
+  0.0%     1             Class loader
 
 
-Global summary of 1195.95 seconds:
-100.0% 105110            Received ticks
- 21.9% 23020             Received GC ticks
-  0.3%   349             Compilation
-  0.0%     8             Other VM operations
-  0.0%     2             Class loader
+Global summary of 1061.14 seconds:
+100.0% 99210             Received ticks
+  4.8%  4794             Received GC ticks
+  0.6%   559             Compilation
+  0.0%     1             Other VM operations
+  0.0%     1             Class loader

@@ -71,39 +71,21 @@ public class PCFGParser implements Parser {
                 double newScore = lexicon.scoreTagging(word, tag);
                 score.get(i).get(i + 1).put(tag, newScore);
             } 
-            boolean added = true;
-            while (added) {
-              added = false;
-              for (String tagChild : score.get(i).get(i + 1).keySet()) {
-                for (Grammar.UnaryRule unaryRule : grammar.getUnaryRulesByChild(tagChild)) {
-                    double prob = unaryRule.getScore() * score.get(i).get(i + 1).get(tagChild);
-                    String tagParent = unaryRule.getParent();
-                    Double oldProb = score.get(i).get(i + 1).get(tagParent);
-                    if (oldProb == null || prob > oldProb) {
-                        score.get(i).get(i + 1).put(tagParent, prob);
-                        Triplet<Integer, String, String> newBack 
-                            = new Triplet<Integer, String, String>(-1, tagChild, "");
-                        back.get(i).get(i + 1).put(tagParent, newBack);
-                        added = true;
-                    }
-                }
-                if (added) break;
-              }
-            }
+            addUnaryRule(score.get(i).get(i + 1), back.get(i).get(i + 1));
         }
 
         // Go on with grammars
         for (int span = 2; span <= numWord; span ++ ) {
             for (int begin = 0; begin <= numWord - span; begin ++) {
                 int end = begin + span;
-                for (int split = begin + 1; split <= end - 1; split ++) 
+                for (int split = begin + 1; split <= end - 1; split ++) {
+                    Set<String> tagRightChildren = score.get(split).get(end).keySet();
                     for (String tagLeftChild : score.get(begin).get(split).keySet()) {
-                        Set<String> tagRightChildren = score.get(split).get(end).keySet();
+                        double leftChildScore = score.get(begin).get(split).get(tagLeftChild);
                         for (Grammar.BinaryRule binaryRule : grammar.getBinaryRulesByLeftChild(tagLeftChild)) {
                             if (!tagRightChildren.contains(binaryRule.getRightChild())) continue;
                             String tagRightChild = binaryRule.getRightChild();
-                            double prob = score.get(begin).get(split).get(tagLeftChild) *
-                                    score.get(split).get(end).get(tagRightChild) *
+                            double prob = leftChildScore * score.get(split).get(end).get(tagRightChild) *
                                     binaryRule.getScore();
                             String tagParent = binaryRule.getParent();
                             Double oldProb = score.get(begin).get(end).get(tagParent);             
@@ -115,26 +97,8 @@ public class PCFGParser implements Parser {
                             }
                         }
                     }
-
-                boolean added = true;
-                while (added) {
-                    added = false;
-                    for (String tagChild : score.get(begin).get(end).keySet()) {
-                        for (Grammar.UnaryRule unaryRule : grammar.getUnaryRulesByChild(tagChild)) {
-                            double prob = unaryRule.getScore() * score.get(begin).get(end).get(tagChild);
-                            String tagParent = unaryRule.getParent();
-                            Double oldProb = score.get(begin).get(end).get(tagParent);             
-                            if (oldProb == null || prob > oldProb) {
-                               score.get(begin).get(end).put(tagParent, prob);
-                               Triplet<Integer, String, String> newBack 
-                                   = new Triplet<Integer, String, String>(-1, tagChild, "");
-                               back.get(begin).get(end).put(tagParent, newBack);
-                               added = true;
-                            }
-                        }
-                        if (added) break;
-                    }
-                }    
+                }
+                addUnaryRule(score.get(begin).get(end), back.get(begin).get(end));
             }
         }
 
@@ -143,6 +107,39 @@ public class PCFGParser implements Parser {
             return baselineParser.getBestParse(sentence);
         } else 
             return recoverParseTree(sentence, score, back);
+    }
+
+    private void addUnaryRule(Map<String, Double> score, Map<String, Triplet<Integer, String, String> > back) {
+        LinkedList< Triplet<String, String, Double> > addTag = new LinkedList< Triplet<String, String, Double> >();
+        for (String tagChild : score.keySet()) {
+            double childScore = score.get(tagChild);
+            for (Grammar.UnaryRule unaryRule : grammar.getUnaryRulesByChild(tagChild)) {
+                double prob = unaryRule.getScore() * childScore;
+                String tagParent = unaryRule.getParent();
+                addTag.offer(new Triplet(tagParent, tagChild, prob));
+            }
+        }
+        while (addTag.size() != 0) {
+            Triplet<String, String, Double> newTag = addTag.poll();
+            String tagParent = newTag.getFirst();
+            String tagChild = newTag.getSecond();
+            double prob = newTag.getThird();
+            Double oldProb = score.get(tagParent);
+            if (oldProb == null || prob > oldProb) {
+                score.put(tagParent, prob);
+                Triplet<Integer, String, String> newBack 
+                    = new Triplet<Integer, String, String>(-1, tagChild, "");
+                back.put(tagParent, newBack);
+
+                tagChild = tagParent;
+                double childScore = score.get(tagChild);
+                for (Grammar.UnaryRule unaryRule : grammar.getUnaryRulesByChild(tagChild)) {
+                    prob = unaryRule.getScore() * childScore;
+                    tagParent = unaryRule.getParent();
+                    addTag.offer(new Triplet(tagParent, tagChild, prob));
+                }
+            }
+        }
     }
 
     private Tree<String> recoverParseTree(
