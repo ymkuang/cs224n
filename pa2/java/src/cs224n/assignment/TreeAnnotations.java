@@ -43,6 +43,7 @@ public class TreeAnnotations {
 //                      myMarkovizeTree(unAnnotatedTree,"");
 //                      myPrintTree(unAnnotatedTree);
                         return binarizeTree(myMarkovizeTree(unAnnotatedTree,""));
+                        //return binarizeTree(unAnnotatedTree);
                 }
                 if (mode_run==1) {
                         return (mySecondMarkovizeTree(unAnnotatedTree,""));
@@ -67,10 +68,10 @@ public class TreeAnnotations {
 //			myPrintTree(unAnnotatedTree);
 //			myMarkovizeTree(unAnnotatedTree,"");
 //			myPrintTree(unAnnotatedTree);
-			return binarizeTree(myMarkovizeTree(unAnnotatedTree,""));
+			return binarizeTree(unAnnotatedTree);
 		}
 		if (mode_input==1) {
-			return (mySecondMarkovizeTree(unAnnotatedTree,""));
+			return binarizeTree(myMarkovizeTree(unAnnotatedTree,""));
 		}
 		if (mode_input>=2) {
                         return (myThirdMarkovizeTree(unAnnotatedTree,"",""));
