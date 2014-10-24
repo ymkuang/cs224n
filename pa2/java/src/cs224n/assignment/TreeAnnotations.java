@@ -19,7 +19,6 @@ import cs224n.util.Filter;
 
 public class TreeAnnotations {
 
-	//indivator debug mode (only annotate with 2 order markov)
 	public static int mode_run = 0; 
 	//0 just log lossless, 1 markov 2nd order, 2 markov 3rd order, 3 markov 3rd order + horizontal 2nd order
 	
@@ -29,45 +28,36 @@ public class TreeAnnotations {
 	}
 		
     public static Tree<String> annotateTree(Tree<String> unAnnotatedTree) {
-
+    	//0 just log lossless, 1 markov 2nd order, 2 markov 3rd order, 3 markov 3rd order + horizontal 2nd order
     	if (mode_run == 0) {
         	return binarizeTree(unAnnotatedTree);
     	}
     	if (mode_run == 1) {
-        	return binarizeTree(myMarkovizeTree(unAnnotatedTree, ""));
+        	return binarizeTree(myVert2MarkovTree(unAnnotatedTree, ""));
     	}
     	if (mode_run==2) {
-            return (myHorizontalMarkovizeTree(unAnnotatedTree, "", "", ""));
+            return binarizeTree(myVert3MarkovTree(unAnnotatedTree, "", ""));
         }
 		if (mode_run==3) {
-			return binarizeTree(myMarkovizeTree(unAnnotatedTree, "", ""));
+			return binarizeTree(myHor2Vert3MarkovTree(unAnnotatedTree, "", "", ""));
 		}
         return binarizeTree(unAnnotatedTree);
     }
 	
 	public static Tree<String> annotateTree(Tree<String> unAnnotatedTree, int mode_input) {
-
-		// Currently, the only annotation done is a lossless binarization
-
-		// TODO: change the annotation from a lossless binarization to a
-		// finite-order markov process (try at least 1st and 2nd order)
-
-		// TODO : mark nodes with the label of their parent nodes, giving a second
-		// order vertical markov process
-		mode_run = mode_input;
-//		System.out.println("!!!mode :" + mode_input + "\n");		
-		if (mode_input==0) {
+		mode_run = mode_input;		
+		//0 just log lossless, 1 markov 2nd order, 2 markov 3rd order, 3 markov 3rd order + horizontal 2nd order
+		if (mode_input == 0) {
 			return binarizeTree(unAnnotatedTree);
 		}
-		if (mode_input==1) {
-			return binarizeTree(myMarkovizeTree(unAnnotatedTree, ""));
+		if (mode_input == 1) {
+			return binarizeTree(myVert2MarkovTree(unAnnotatedTree, ""));
 		}
-		if (mode_input==2) {
-
-            return binarizeTree(myHorizontalMarkovizeTree(unAnnotatedTree, "", "", ""));
+		if (mode_input == 2) {
+            return binarizeTree(myVert3MarkovTree(unAnnotatedTree, "", ""));
         }
-		if (mode_input==3) {
-			return binarizeTree(myMarkovizeTree(unAnnotatedTree, "", ""));
+		if (mode_input == 3) {
+			return binarizeTree(myHor2Vert3MarkovTree(unAnnotatedTree, "", "", ""));
 		}
 		return binarizeTree(unAnnotatedTree);
 	}
@@ -89,8 +79,8 @@ public class TreeAnnotations {
 		return 1;
     }
 
-	private static Tree<String> myMarkovizeTree(Tree<String> tree, String labelParent) {
-		//System.out.print("-> "+tree.getLabel()+":");
+	private static Tree<String> myVert2MarkovTree(Tree<String> tree, String labelParent) {
+		// 2nd vertical Markovize
 		String label = tree.getLabel();
 
 		if (tree.isLeaf()) {
@@ -99,7 +89,7 @@ public class TreeAnnotations {
 		
 	    List<Tree<String>> newChildrenTrees = new ArrayList<Tree<String>>();
  		for (Tree<String> childrenTree : tree.getChildren())
-            newChildrenTrees.add(myMarkovizeTree(childrenTree, label));
+            newChildrenTrees.add(myVert2MarkovTree(childrenTree, label));
 		
 		Tree<String> newNode;
 		if (labelParent != ""){
@@ -110,16 +100,16 @@ public class TreeAnnotations {
 		return newNode;
 	}
 	
-	private static Tree<String> myMarkovizeTree(Tree<String> tree, String labelParent, String labelGrandParent) {
+	private static Tree<String> myVert3MarkovTree(Tree<String> tree, String labelParent, String labelGrandParent) {
+        // 3rd vertical Markovize
         String label = tree.getLabel();
         if (tree.isLeaf()) {
             return new Tree<String>(label);
         }
-
         
         List<Tree<String>> newChildrenTrees = new ArrayList<Tree<String>>();
         for (Tree<String> childrenTree : tree.getChildren())
-            newChildrenTrees.add(myMarkovizeTree(childrenTree, label, labelParent));
+            newChildrenTrees.add(myVert3MarkovTree(childrenTree, label, labelParent));
         
         if (labelParent != ""){
             label += "^" + labelParent;
@@ -130,8 +120,9 @@ public class TreeAnnotations {
         return new Tree<String> (label, newChildrenTrees);
     }	
 
-	private static Tree<String> myHorizontalMarkovizeTree(Tree<String> tree, 
+	private static Tree<String> myHor2Vert3MarkovTree(Tree<String> tree, 
 		String labelParent, String labelGrandParent, String labelBrother) {
+        // 3rd vertical Markovize + 2nd horizental Markovize
         String label = tree.getLabel();
         if (tree.isLeaf()) {
         	return new Tree<String>(label);
@@ -142,7 +133,7 @@ public class TreeAnnotations {
 		for (Tree<String> childrenTree : tree.getChildren()) {
             labelChildBrother = labelChild;
             labelChild = childrenTree.getLabel();
-            newChildrenTrees.add(myHorizontalMarkovizeTree(childrenTree, label, labelParent, labelChildBrother));
+            newChildrenTrees.add(myHor2Vert3MarkovTree(childrenTree, label, labelParent, labelChildBrother));
 		}
         if (labelParent != "") label += "^" + labelParent;
         if (labelGrandParent != "") label += "^" + labelGrandParent;
@@ -185,8 +176,6 @@ public class TreeAnnotations {
 			if (index1>0 && index2>0 && index3>0) {
 				horizontalLabel_sim = horizontalLabel_sim.substring(0,index1+1)+"..."+horizontalLabel_sim.substring(index3+1);
 			}
-			//System.out.print("\n"+horizontalLabel);
-			//System.out.print("\n"+horizontalLabel_sim);
 			Tree<String> rightTree = 
 					binarizeTreeHelper(tree, numChildrenGenerated + 1, 
 							horizontalLabel_sim);
