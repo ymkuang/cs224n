@@ -58,7 +58,7 @@ public class PCFGParserTester {
 		options.put("-data",      "miniTest");
 		options.put("-parser",    "cs224n.assignment.BaselineParser");
 		options.put("-maxLength", "20");
-		options.put("-mode", "0");
+		options.put("-mode", "1");
 
 		// let command-line options supersede defaults .........................
 		options.putAll(CommandLineUtils.simpleCommandLineParser(args));
