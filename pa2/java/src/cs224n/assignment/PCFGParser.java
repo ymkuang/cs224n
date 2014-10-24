@@ -14,11 +14,10 @@ public class PCFGParser implements Parser {
     private BaselineParser baselineParser;
 
     public void train(List<Tree<String>> trainTrees) {
-        // TODO: before you generate your grammar, the training trees
-        // need to be binarized so that rules are at most binary
+        // Do markovization and binarization
         List<Tree<String>> binaryTrainTrees = new ArrayList<Tree<String>>();
         for (Tree<String> trainTree : trainTrees)
-            binaryTrainTrees.add(TreeAnnotations.annotateTree(trainTree,0));
+            binaryTrainTrees.add(TreeAnnotations.annotateTree(trainTree, 1));
 
         lexicon = new Lexicon(binaryTrainTrees);
         grammar = new Grammar(binaryTrainTrees);
@@ -27,15 +26,11 @@ public class PCFGParser implements Parser {
         baselineParser.train(trainTrees);
     }
 
-    public void train(List<Tree<String>> trainTrees,int mode) {
-        // TODO: before you generate your grammar, the training trees
-        // need to be binarized so that rules are at most binary
-        //mode:
-//	System.out.print("Specified Annotation Mode : "+mode+"\n");
-
-	List<Tree<String>> binaryTrainTrees = new ArrayList<Tree<String>>();
+    public void train(List<Tree<String>> trainTrees, int mode) {
+        // Do markovization and binarization
+	    List<Tree<String>> binaryTrainTrees = new ArrayList<Tree<String>>();
         for (Tree<String> trainTree : trainTrees)
-            binaryTrainTrees.add(TreeAnnotations.annotateTree(trainTree,mode));
+            binaryTrainTrees.add(TreeAnnotations.annotateTree(trainTree, mode));
 
         lexicon = new Lexicon(binaryTrainTrees);
         grammar = new Grammar(binaryTrainTrees);
@@ -110,6 +105,7 @@ public class PCFGParser implements Parser {
     }
 
     private void addUnaryRule(Map<String, Double> score, Map<String, Triplet<Integer, String, String> > back) {
+        // Use queue to add unary rules for a cell
         LinkedList< Triplet<String, String, Double> > addTag = new LinkedList< Triplet<String, String, Double> >();
         for (String tagChild : score.keySet()) {
             double childScore = score.get(tagChild);
@@ -145,9 +141,9 @@ public class PCFGParser implements Parser {
     private Tree<String> recoverParseTree(
         List<String> sentence, ArrayList< ArrayList< Map<String, Double> > > score,
         ArrayList< ArrayList< Map<String, Triplet<Integer, String, String> > > > back) {
+        // Use queue (breadth fist search) to recover the parse tree
         Queue< Triplet<Tree<String>, Integer, Integer> > queue 
             = new LinkedList< Triplet<Tree<String>, Integer, Integer> >();
-        
 
         int end = score.size() - 1;
         
