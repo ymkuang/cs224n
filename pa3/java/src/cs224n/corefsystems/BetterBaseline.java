@@ -18,29 +18,34 @@ public class BetterBaseline implements CoreferenceSystem {
 
 	@Override
 	public void train(Collection<Pair<Document, List<Entity>>> trainingData) {
-		headCluster = new HashMap<String, int>();
-		for(Entity e : clusters) {
-            for(Pair<Mention, Mention> mentionPair : e.orderedMentionPairs()) {
-                Set<String> setFirst = headCluster.get(mentionPair.getFirst());
-                Set<String> setSecond = headCluster.get(mentionPair.getSecond());
-                if (setFirst == null && setSecond == null) {
-                	Set<String> newHeadSet = new Set<String>();
-                	newHeadSet.add(mentionPair.getFirst());
-                	newHeadSet.add(mentionPair.getSecond());
-                	headCluster.put(mentionPair.getFirst(), newHeadSet);
-                	headCluster.put(mentionPair.getSecond(), newHeadSet);
-                } else if (setFirst == null) {
-                	setSecond.add(mentionPair.getFirst());
-                	headCluster.put(mentionPair.getFirst(), setSecond);
-                } else if (setSecond == null) {
-                	setFirst.add(mentionPair.getSecond());
-                	headCluster.put(mentionPair.getSecond(), setFirst);
-                } else {
-                	if (setFirst == setSecond) continue;
-                	setFirst.addAll(setSecond);
-                	for (String s : setSecond) {
-                		headCluster.put(s, setFirst);
-                	}
+		headCluster = new HashMap<String, Set<String>>();
+        for (Pair<Document, List<Entity>> pair : trainingData) {
+            List<Entity> clusters = pair.getSecond();
+            for (Entity e : clusters) {
+                for (Pair<Mention, Mention> mentionPair : e.orderedMentionPairs()) {
+                    String firstHead = mentionPair.getFirst().headWord();
+                    String secondHead = mentionPair.getSecond().headWord();
+                    Set<String> setFirst = headCluster.get(firstHead);
+                    Set<String> setSecond = headCluster.get(secondHead);
+                    Set<String> newHeadSet;
+                    if (setFirst == null && setSecond == null) {
+                       newHeadSet = new HashSet<String>();
+                       newHeadSet.add(firstHead);
+                       newHeadSet.add(secondHead);
+                    } else if (setFirst == null) {
+                        newHeadSet = setSecond;
+                        newHeadSet.add(firstHead);
+                    } else if (setSecond == null) {
+                        newHeadSet = setFirst;
+                        newHeadSet.add(secondHead);
+                    } else {
+                        if (setFirst.equals(setSecond)) continue;
+                        newHeadSet = setFirst;
+                        newHeadSet.addAll(setSecond);
+                    }
+                    for (String s : newHeadSet) {
+                        headCluster.put(s, newHeadSet);
+                    }    
                 }
             }
         }
@@ -53,9 +58,12 @@ public class BetterBaseline implements CoreferenceSystem {
 		for (Mention m : doc.getMentions()) {
 			String head = m.headWord();
             Set<String> setHead = headCluster.get(head);
-            if (setHead == null) setHead = new Set<String>(head);
+            if (setHead == null) {
+                setHead = new HashSet<String>();
+                setHead.add(head);
+            }
             Entity e = clusters.get(setHead);
-            if (e != null) mentions.add(m.makeCoreferent(e));
+            if (e != null) mentions.add(m.markCoreferent(e));
             else {
             	ClusteredMention newCluster = m.markSingleton();
             	clusters.put(setHead, newCluster.entity);
