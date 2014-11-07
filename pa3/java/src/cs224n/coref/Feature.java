@@ -98,11 +98,45 @@ public interface Feature {
   }
 
   public static class ExactMatch extends Indicator {
-    public ExactMatch(boolean exactMatch){ super(exactMatch); }
-  }
+    public ExactMatch(boolean exactMatch){ super(exactMatch); }}
+  
+  public static class HeadMatch extends Indicator {
+		public HeadMatch(boolean headMatch) {super(headMatch);}}
+		
+  public static class GenderMatch extends Indicator {
+		public GenderMatch(boolean match) {super(match);}}
+
+  public static class SpeakerMatch extends Indicator {
+                public SpeakerMatch(boolean match) {super(match);}}
+	
+  public static class NumberMatch extends Indicator {
+		public NumberMatch(boolean match) {super(match);}}
+	
+	
+  public static class FixedPron extends StringIndicator {
+		public FixedPron(String isPron) {super(isPron);}}
+	
+  public static class CandidatePron extends StringIndicator {
+		public CandidatePron(String isPron) {super(isPron);}}
+	
+  public static class FixedName extends Indicator {
+		public FixedName(boolean value) {super(value);}}
+	
+  public static class CandidateName extends Indicator {
+		public CandidateName(boolean value) {super(value);}}
+
+  public static class SentenceDistance extends IntIndicator {
+		public SentenceDistance(int dist) {super(dist);}}
+
+  public static class MentionDistance extends IntIndicator {
+		public MentionDistance(int dist) {super(dist);}}
+
+  public static class Path extends StringIndicator {
+		public Path(String path) {super(path);}}
   
   /*
    * TODO: Add values to the indicators here.
    */
-
+  
+  
 }
