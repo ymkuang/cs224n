@@ -50,7 +50,7 @@ public class ClassifierBased implements CoreferenceSystem {
 			Feature.Path.class,
 			//skeleton for how to create a pair feature
 			Pair.make(Feature.FixedPron.class, Feature.CandidatePron.class),
-//			Pair.make(Feature.FixedName.class, Feature.CandidateName.class)
+			Pair.make(Feature.FixedName.class, Feature.CandidateName.class)
 	});
 
 
