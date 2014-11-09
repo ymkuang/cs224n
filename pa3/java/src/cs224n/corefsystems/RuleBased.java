@@ -212,8 +212,8 @@ public class RuleBased implements CoreferenceSystem {
 		Tree<String> parent = parent1;
 		List<Tree<String>> children = parent.getChildren();
 		if (parent.getLabel().equals("NP") && children.size() == 3 
-			&& children.get(0).getLabel().equals(m1.parse) 
-			&& children.get(2).getLabel().equals(m2.parse)
+			&& children.get(0).equals(m1.parse) 
+			&& children.get(2).equals(m2.parse)
 			&& children.get(1).getLabel().equals(","))
 			return true;
 	    else return false;

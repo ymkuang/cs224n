@@ -62,8 +62,7 @@ public class BetterBaseline implements CoreferenceSystem {
                 setHead = new HashSet<String>();
                 setHead.add(head);
             }
-            Entity e = clusters.get(setHead);
-            if (e != null) mentions.add(m.markCoreferent(e));
+            if (clusters.containsKey(setHead)) mentions.add(m.markCoreferent(clusters.get(setHead)));
             else {
             	ClusteredMention newCluster = m.markSingleton();
             	clusters.put(setHead, newCluster.entity);
