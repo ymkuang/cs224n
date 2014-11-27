@@ -49,7 +49,18 @@ public class FeatureFactory {
 		return data;
 	}
  
- 
+    public static HashMap<String, Integer> typeToNum = new HashMap<String, Integer>();
+    public static int numType;
+    public static HashMap<String, Integer> initType() {
+    	typeToNum.put("O", 0);
+    	typeToNum.put("LOC", 1);
+    	typeToNum.put("MISC", 2);
+    	typeToNum.put("ORG", 3);
+    	typeToNum.put("PER", 4);
+    	numType = 5;
+
+    }
+
 	// Look up table matrix with all word vectors as defined in lecture with dimensionality n x |V|
 	static SimpleMatrix allVecs; //access it directly in WindowModel
 	public static SimpleMatrix readWordVectors(String vecFilename) throws IOException {
