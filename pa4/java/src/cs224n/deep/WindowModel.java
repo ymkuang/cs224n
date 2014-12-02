@@ -20,7 +20,7 @@ public class WindowModel {
     private List<SimpleMatrix> dL;
     private HashMap<Integer, Integer> idxMap;
 
-    private final double lambda, lr, tol;
+    private final double lambda, lr, tol, reg;
 	//
 	public int windowSize, wordSize, hiddenSize;
 
@@ -29,7 +29,21 @@ public class WindowModel {
 		this.lr = _lr;
 		this.lambda = 0.01;
 		this.tol = 1e-4;
+		this.windowSize=_windowSize;
+		this.hiddenSize=_hiddenSize;
+		this.wordSize = 50;
 	}
+	//more para
+	public WindowModel(int _windowSize, int _hiddenSize, double _lr, double _reg){
+                //TODO
+                this.lr = _lr;
+                this.lambda = _reg;
+                this.tol = 1e-4;
+		this.reg = _reg;
+                this.windowSize=_windowSize;
+                this.hiddenSize=_hiddenSize;
+		this.wordSize = 50;
+        }
 
 	/**
 	 * Initializes the weights randomly. 
@@ -39,9 +53,71 @@ public class WindowModel {
 		// initialize with bias inside as the last column
 		// W = SimpleMatrix...
 		// U for the score
-		// U = SimpleMatrix...
+		// U = SimpleMatrix..
+		double eps_W = Math.sqrt(6)/ Math.sqrt(wordSize*windowSize+hiddenSize);
+		double eps_U = Math.sqrt(6)/ Math.sqrt(hiddenSize+1);
+
+		W = SimpleMatrix.random(hiddenSize,wordSize*windowSize, -eps_W,eps_W, new Random());
+		b_1 = new SimpleMatrix(hiddenSize,1);
+		U = SimpleMatrix.random(1,hiddenSize, -eps_U, eps_U, new Random());
+		b_2 = new SimpleMatrix(1,1);
+		
 	}
 
+	//added get windowed input
+	private SimpleMatrix getWindowedSample(List<Datum> data, int sampleNum) {
+		int m = data.size();
+		SimpleMatrix windowSample = new SimpleMatrix(windowSize*wordSize,1);
+		int range_window=(windowSize-1)/2;
+		String sample;
+		for (int i = -range_window;i<=range_window;i++) {
+			int cap = 0;
+			if (sampleNum+i<0) {
+				sample = "<s>";
+			} else {
+				if (sampleNum+i>=m) {
+					sample = "</s>";
+				} else {
+					sample = data.get(sampleNum+i).word;
+					cap = featureCap(sample);
+					sample = sample.toLowerCase();
+				}
+			}
+			Integer sampleNum = FeatureFactory.wordToNum.get(sample);
+			if (sampleNum == null)
+				sampleNum = 0;
+			
+			SimpleMatrix wordVec = FeatureFactory.allVecs.extractVector(false,sampleNum);
+			windowSample.insertIntoThis((i*range_window)*(wordSize),0,wordVec);
+		}
+		return windowSample;
+	}
+
+	//somthing to get feature related to capticalization
+	private int featureCap(String word){
+		boolean firstCapital = false;
+		int numCap = 0;
+		for(int i=0; i<word.length(); i++){
+			if(Character.isUpperCase(word.charAt(i))){
+				numCap++;
+				if(i==0)
+					firstCapital = true;
+			} else {
+				break;
+			}
+		}
+			
+		if (numCap==0)
+			return 0;
+		
+		if(numCap==1 && firstCapital)
+			return 1;
+	        
+		if(numCap==word.length())
+                        return 2;	
+		//other
+		return 3;
+	}
 
 	/**
 	 * Simplest SGD training 
@@ -51,7 +127,7 @@ public class WindowModel {
         // TO DO : get 10 windows and corresponding labels
         gradient(windows, labels);
         if (!checkGradient(windows, labels)) 
-        	System.out.print("Fail in gradient check.\n")
+        	System.out.print("Fail in gradient check.\n");
 
 		// SGD
 		initGradient();
@@ -69,7 +145,44 @@ public class WindowModel {
 	
 	public void test(List<Datum> testData){
 		// TODO
+		int numTest = testData.size();
+		double numCorrect=0;
+		double numReturned=0;
+		double  numGold=0;
+		for (int indTest=0; indTest<numTest;indTest++) {
+			SimpleMatrix mat_input = getWindowedSample(testData,indTest);
+			SimpleMatrix mat_hiddenin = tanh((W.mult(mat_input)).plus(b1));
+			double h = matSigmoid(U.mult(mat_hiddenin).plus(b_2)).get(0,0);
+			Integer vecNum = FeatureFactory.wordToNum.get(testData.get(indTest).word.toLowerCase());
+		        if (testData.get(indTest).label.equals("O")==false) {
+                        	numGold++;
+				if (h>0.5)
+					numCorrect++;
+			}	
+			if (h>0.5)
+				numReturned++;
 		}
+		double precision = numCorrect/numReturned;
+		double recall = numCorrect/numGold;
+		double F1=2*(precision*recall)/(precision+recall);
+
+		System.out.println("Testing with data, F1 score: " + F1 + " with precision: " + precision + " recall: " + recall);
+	}
+
+	//sigmoid function of matrix (elementwise)
+	private SimpleMatrix matSigmoid(SimpleMatrix mat) {
+		int numRows = mat.numRows();
+		int numCols = mat.numCols();
+		SimpleMatrix sig = new SimpleMatrix(numRows, numCols);
+
+		for (int row = 0; row < numRows; row++) {
+			for (int col = 0; col < numCols; col++) {
+				double sigVal = mat.get(row, col);
+			}
+		}
+
+		return sig;
+	}
 	
     private void gradient(List<List<Integer>> windows, List<String> labels) {
     	int m = windows.size();
