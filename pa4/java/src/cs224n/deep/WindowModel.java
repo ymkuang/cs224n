@@ -54,23 +54,27 @@ public class WindowModel {
 		// W = SimpleMatrix...
 		// U for the score
 		// U = SimpleMatrix..
-		double eps_W = Math.sqrt(6)/ Math.sqrt(wordSize*windowSize+hiddenSize);
-		double eps_U = Math.sqrt(6)/ Math.sqrt(hiddenSize+1);
+		double eps_W = Math.sqrt(6) / Math.sqrt(wordSize * windowSize + hiddenSize);
+		double eps_U = Math.sqrt(6) / Math.sqrt(hiddenSize + FeatureFactory.numType);
 
-		W = SimpleMatrix.random(hiddenSize,wordSize*windowSize, -eps_W,eps_W, new Random());
-		b_1 = new SimpleMatrix(hiddenSize,1);
-		U = SimpleMatrix.random(1,hiddenSize, -eps_U, eps_U, new Random());
-		b_2 = new SimpleMatrix(1,1);
+		W = SimpleMatrix.random(hiddenSize, wordSize * windowSize, -eps_W, eps_W, new Random());
+		b_1 = new SimpleMatrix(hiddenSize, 1);
+		U = SimpleMatrix.random(FeatureFactory.numType, hiddenSize, -eps_U, eps_U, new Random());
+		b_2 = new SimpleMatrix(FeatureFactory.numType, 1);
 		
 	}
 
+    private List<List<Integer>> getWindows(List<Datum> data, List<Integer> sampleNums) {
+
+    }
+    // private SimpleMatrix getLVector(List<Integer> window);
 	//added get windowed input
 	private SimpleMatrix getWindowedSample(List<Datum> data, int sampleNum) {
 		int m = data.size();
 		SimpleMatrix windowSample = new SimpleMatrix(windowSize*wordSize,1);
 		int range_window=(windowSize-1)/2;
 		String sample;
-		for (int i = -range_window;i<=range_window;i++) {
+		for (int i = -range_window; i <= range_window; i++) {
 			int cap = 0;
 			if (sampleNum+i<0) {
 				sample = "<s>";
@@ -146,6 +150,7 @@ public class WindowModel {
 	public void test(List<Datum> testData){
 		// TODO
 		int numTest = testData.size();
+		// output according to example.out
 		double numCorrect=0;
 		double numReturned=0;
 		double  numGold=0;
@@ -168,6 +173,11 @@ public class WindowModel {
 
 		System.out.println("Testing with data, F1 score: " + F1 + " with precision: " + precision + " recall: " + recall);
 	}
+
+    // compute h and p
+    // private void feedForward(SimpleMatrix L); 
+    // compute cost function given windows and true labels
+    // private double costFunction(List<List<Integer>> windows, List<String> labels);
 
 	//sigmoid function of matrix (elementwise)
 	private SimpleMatrix matSigmoid(SimpleMatrix mat) {

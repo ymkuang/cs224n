@@ -55,8 +55,8 @@ public class FeatureFactory {
 		return data;
 	}
  
-    public static HashMap<String, Integer> typeToNum = new HashMap<String, Integer>();
-    public static int numType;
+    static HashMap<String, Integer> typeToNum = new HashMap<String, Integer>();
+    static int numType;
     public static HashMap<String, Integer> initType() {
     	typeToNum.put("O", 0);
     	typeToNum.put("LOC", 1);
