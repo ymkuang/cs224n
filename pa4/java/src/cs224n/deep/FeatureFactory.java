@@ -55,17 +55,24 @@ public class FeatureFactory {
 		return data;
 	}
  
+    static List<String> typeList = new ArrayList<String>();
     static HashMap<String, Integer> typeToNum = new HashMap<String, Integer>();
     static int numType;
     public static HashMap<String, Integer> initType() {
+    	typeList.add("O");
+    	typeList.add("LOC");
+    	typeList.add("MISC");
+    	typeList.add("ORG");
+    	typeList.add("PER");
+
     	typeToNum.put("O", 0);
     	typeToNum.put("LOC", 1);
     	typeToNum.put("MISC", 2);
     	typeToNum.put("ORG", 3);
     	typeToNum.put("PER", 4);
+    	
     	numType = 5;
-	//not sure
-	return typeToNum;
+	    return typeToNum;
     }
 
 

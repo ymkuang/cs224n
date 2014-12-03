@@ -62,13 +62,19 @@ public class WindowModel {
 		U = SimpleMatrix.random(FeatureFactory.numType, hiddenSize, -eps_U, eps_U, new Random());
 		b_2 = new SimpleMatrix(FeatureFactory.numType, 1);
 		
+		// Init L
+		for (int i = 0; i < FeatureFactory.allVecs.numCols(); i++) {
+			L.add(FeatureFactory.allVecs.extractVector(false, i));
+		}
 	}
 
     private List<List<Integer>> getWindows(List<Datum> data, List<Integer> sampleNums) {
 
     }
+    // getWindow
     // private SimpleMatrix getLVector(List<Integer> window);
 	//added get windowed input
+
 	private SimpleMatrix getWindowedSample(List<Datum> data, int sampleNum) {
 		int m = data.size();
 		SimpleMatrix windowSample = new SimpleMatrix(windowSize*wordSize,1);
@@ -123,12 +129,27 @@ public class WindowModel {
 		return 3;
 	}
 
+    private List<String> getLabels(List<Datum> data, List<Integer> samples) {
+    	List<String> labels = new ArrayList<String>();
+    	for (int i = 0 ; i < samples.size(); i ++) {
+    		labels.add(data.get(samples.get(i)).label);
+    	}
+    	return labels;
+    }
+
 	/**
 	 * Simplest SGD training 
 	 */
 	public void train(List<Datum> _trainData ){
+		List<Integer> samples;
+		List<List<Integer>> windows;
+		List<String> labels;
+
 		// Check gradient
         // TO DO : get 10 windows and corresponding labels
+        samples = getRandomSamples(_trainData, 10);
+        windows = getWindows(_trainData, samples);
+        labels = getLabels(_trainData, samples);
         gradient(windows, labels);
         if (!checkGradient(windows, labels)) 
         	System.out.print("Fail in gradient check.\n");
@@ -137,7 +158,15 @@ public class WindowModel {
 		initGradient();
 		int pos = 0;
 		while (true) {
-            // TO DO: Get next window and label and update pos
+			do {
+                pos ++;
+                if (pos == _trainData.size()) pos = 0;
+			} while (_trainData.get(pos).word.equals("<s>") || _trainData.get(pos).word.equals("<\s>"));
+			
+            samples.clear();
+            samples.add(pos);
+            windows = getWindows(_trainData, samples);
+            labels = getLabels(_trainData, samples);
           
             // compute gradient
             gradient(windows, labels);
@@ -150,48 +179,78 @@ public class WindowModel {
 	public void test(List<Datum> testData){
 		// TODO
 		int numTest = testData.size();
+		PrintWriter output = new PrintWriter("../result");
 		// output according to example.out
-		double numCorrect=0;
-		double numReturned=0;
-		double  numGold=0;
-		for (int indTest=0; indTest<numTest;indTest++) {
-			SimpleMatrix mat_input = getWindowedSample(testData,indTest);
-			SimpleMatrix mat_hiddenin = tanh((W.mult(mat_input)).plus(b1));
-			double h = matSigmoid(U.mult(mat_hiddenin).plus(b_2)).get(0,0);
-			Integer vecNum = FeatureFactory.wordToNum.get(testData.get(indTest).word.toLowerCase());
-		        if (testData.get(indTest).label.equals("O")==false) {
-                        	numGold++;
-				if (h>0.5)
-					numCorrect++;
-			}	
-			if (h>0.5)
-				numReturned++;
+		for (int i = 0; i < numTest; i ++) {
+			Datum sample = testData.get(i);
+			if (sample.word.equals("<s>") || sample.word.equals("<\s>")) continue;
+            SimpleMatrix currentL = getLVector(getWindow(testData, i));
+            feedForward(currentL);
+            String predLabel = FeatureFactory.typeList.get(findMax());
+            output.printf("%s\t%s\t%s\n", sample.word, predLabel, sample.label);
 		}
-		double precision = numCorrect/numReturned;
-		double recall = numCorrect/numGold;
-		double F1=2*(precision*recall)/(precision+recall);
-
-		System.out.println("Testing with data, F1 score: " + F1 + " with precision: " + precision + " recall: " + recall);
+        output.close();
 	}
 
     // compute h and p
-    // private void feedForward(SimpleMatrix L); 
+    private void feedForward(SimpleMatrix currentL) {
+    	h = matTanh(W.mult(currentL).plus(b_1));
+    	SimpleMatrix v = U.mult(h).plus(b_2);
+        p = maxEnt(v);
+    } 
     // compute cost function given windows and true labels
-    // private double costFunction(List<List<Integer>> windows, List<String> labels);
+    private double costFunction(List<List<Integer>> windows, List<String> labels) {
+    	int m = windows.size();
+    	double cost = 0;
+    	for (int i = 0; i < m; i ++) {
+    		SimpleMatrix currentL = getLVector(windows.get(i));
+    		feedForward(currentL);
+            cost += singleCost(labels.get(i));
+    	}
+    	cost /= m;
+    	cost += lambda / 2 / m * (normF(W) ^ 2 + normF(U) ^ 2);
+    	return cost;
+    }
 
-	//sigmoid function of matrix (elementwise)
-	private SimpleMatrix matSigmoid(SimpleMatrix mat) {
-		int numRows = mat.numRows();
-		int numCols = mat.numCols();
-		SimpleMatrix sig = new SimpleMatrix(numRows, numCols);
+    private double singleCost(String label) {
+        int trueType = FeatureFactory.typeToNum.get(label);
+        return -Math.log(p.get(trueType, 1));
+    }
 
-		for (int row = 0; row < numRows; row++) {
-			for (int col = 0; col < numCols; col++) {
-				double sigVal = mat.get(row, col);
-			}
+    private int findMax() {
+    	double maxP = -1;
+    	int maxType = -1;
+    	for (int i = 0; i < p.numRows(); i ++) {
+    		if (p.get(i, 1) > maxP) {
+    			maxP = p.get(i, 1);
+    			maxType = i;
+    		}
+    	}
+    	return maxType;
+    }
+
+    private SimpleMatrix matTanh(SimpleMatrix mat) {
+    	int numRows = mat.numRows();
+    	int numCols = mat.numCols();
+    	SimpleMatrix res = new SimpleMatrix(numRows, numCols);
+
+    	for (int i = 0; i < numRows; i ++)
+    		for (int j = 0; j < numCols; j ++) {
+    			res.set(i, j, Math.tanh(mat.get(i,j)));
+    		}
+    	return res;
+    }
+
+	private SimpleMatrix maxEnt(SimpleMatrix v) {
+		SimpleMatrix prob = new SimpleMatrix(v.numRows(), v.numCols());
+		double sum = 0;
+		for (int i = 0; i < v.numRows(); i ++) {
+			sum += Math.exp(v.get(i, 1));
 		}
-
-		return sig;
+		for (int i = 0; i < prob.numRows(); i ++) {
+			prob.set(i, 1, Math.exp(v.get(i, 1)) / sum);
+		}
+		return prob;
 	}
 	
     private void gradient(List<List<Integer>> windows, List<String> labels) {
@@ -265,6 +324,20 @@ public class WindowModel {
         	diff = Math.max(diff, dL.get(idxMap.get(idx)).extractMaxAbs() * lr);
         }
         return diff;
+    }
+
+    private List<Integer> getRandomSamples(List<Datum> data, int size) {
+    	List<Integer> samples = new ArrayList<Integer>();
+    	Random rand = new Random(3);
+    	for (int i = 0; i < size; i ++) {
+            int sample = rand.nextInt(data.size());
+            while (data.get(sample).word.equals("<s>") || data.get(sample).word.equals("<\s>")) {
+            	sample = rand.nextInt(data.size());
+            }
+            samples.add(sample);
+
+    	}
+    	return samples;
     }
 
     private boolean checkGradient(List<List<Integer>> windows, List<String> labels) {
