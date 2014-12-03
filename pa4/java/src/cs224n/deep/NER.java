@@ -38,15 +38,21 @@ public class NER {
 	FeatureFactory.initializeVocab("../data/vocab.txt");
 	SimpleMatrix allVecs= FeatureFactory.readWordVectors("../data/wordVectors.txt");
 
+	//baseline
+        System.out.println("Baseline:");
+        BaselineModel baseline = new BaselineModel();
+        BaselineModel.train(trainData);
+        BaselineModel.test(testData);
+
 	// initialize model 
 	WindowModel model = new WindowModel(windowSize, hiddenSize, learningRate, regularization);
 	System.out.println("Current super-parameters used: Window size: " + windowSize + ", Hidden layer size: " + hiddenSize + ", Learning Rate: " + learningRate + " and regularization: " + regularization);
 	model.initWeights();
-	
+
 	//train and test
-	System.out.println("Train:");
+	System.out.println("Train Network:");
 	model.train(trainData);
- 	System.out.println("Test:");
+ 	System.out.println("Test Network:");
 	model.test(testData);
     }
 }
