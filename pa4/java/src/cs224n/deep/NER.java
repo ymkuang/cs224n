@@ -45,7 +45,7 @@ public class NER {
 	
 	//train and test
 	System.out.println("Train:");
-	model.train(trainDate);
+	model.train(trainData);
  	System.out.println("Test:");
 	model.test(testData);
     }

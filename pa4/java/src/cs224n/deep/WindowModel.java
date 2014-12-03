@@ -69,10 +69,55 @@ public class WindowModel {
 	}
 
     private List<List<Integer>> getWindows(List<Datum> data, List<Integer> sampleNums) {
+	int windowRadius = windowSize/2;
+	List<List<Integer>> windowSampleList = new ArrayList<List<Integer>>();
+	for (int i = 0; i < sampleNums.size(); i++) {
+		int sampleIndex=sampleNums.get(i);
+		Datum instance = data.get(sampleIndex);
+		LinkedList<String> window = new LinkedList<String>();
+		window.add(instance.word);
+		
+		boolean sentenceLeft=instance.word.equals("<s>");
+		boolean sentenceRight=instance.word.equals("</s>");
 
+		//filling left
+		for (int j=0;j<windowRadius;j++) {
+			if (sentenceLeft || i-j-1<0) window.addFirst("<s>");
+			else {
+				window.addFirst(data.get(i-j-1).word);
+				sentenceLeft= data.get(i-j-1).word.equals("<s>");
+	
+			}
+		}
+		
+		//filling right
+		int m =data.size();
+                for (int j=0;j<windowRadius;j++) {
+                        if (sentenceRight || i+j+1>=m) window.addFirst("</s>");
+                        else {
+                                window.addFirst(data.get(i+j+1).word);
+                                sentenceRight= data.get(i+j+1).word.equals("</s>");                       
+
+                        }
+                }
+
+		//string to num
+		ArrayList<Integer> windowSample = new ArrayList<Integer>();
+		for (String word: window) {
+			windowSample.add(FeatureFactory.wordToNum.get(word));
+		}
+		windowSampleList.add(windowSample);
+	}
+	return windowSampleList;
     }
+
     // getWindow
-    // private SimpleMatrix getLVector(List<Integer> window);
+    private SimpleMatrix getLVector(List<Integer> window){
+		SimpleMatrix vec = new SimpleMatrix(wordSize * windowSize, 1);
+		for (int w = 0; w < window.size(); ++w) {
+			vec.insertIntoThis(w * wordSize, 0, L.get(w).extractVector(false, 0));
+		return vec;
+	}
 	//added get windowed input
 
 	private SimpleMatrix getWindowedSample(List<Datum> data, int sampleNum) {
@@ -93,11 +138,11 @@ public class WindowModel {
 					sample = sample.toLowerCase();
 				}
 			}
-			Integer sampleNum = FeatureFactory.wordToNum.get(sample);
-			if (sampleNum == null)
-				sampleNum = 0;
+			Integer sampleOut = FeatureFactory.wordToNum.get(sample);
+			if (sampleOut == null)
+				sampleOut = 0;
 			
-			SimpleMatrix wordVec = FeatureFactory.allVecs.extractVector(false,sampleNum);
+			SimpleMatrix wordVec = FeatureFactory.allVecs.extractVector(false,sampleOut);
 			windowSample.insertIntoThis((i*range_window)*(wordSize),0,wordVec);
 		}
 		return windowSample;
@@ -161,7 +206,7 @@ public class WindowModel {
 			do {
                 pos ++;
                 if (pos == _trainData.size()) pos = 0;
-			} while (_trainData.get(pos).word.equals("<s>") || _trainData.get(pos).word.equals("<\s>"));
+			} while (_trainData.get(pos).word.equals("<s>") || _trainData.get(pos).word.equals("</s>"));
 			
             samples.clear();
             samples.add(pos);
@@ -183,7 +228,7 @@ public class WindowModel {
 		// output according to example.out
 		for (int i = 0; i < numTest; i ++) {
 			Datum sample = testData.get(i);
-			if (sample.word.equals("<s>") || sample.word.equals("<\s>")) continue;
+			if (sample.word.equals("<s>") || sample.word.equals("</s>")) continue;
             SimpleMatrix currentL = getLVector(getWindow(testData, i));
             feedForward(currentL);
             String predLabel = FeatureFactory.typeList.get(findMax());
@@ -318,6 +363,7 @@ public class WindowModel {
 
     	b_1 = b_1.minus(db_1.scale(lr));
         diff = Math.max(diff, db_1.extractMaxAbs() * lr);
+			}
 
         for (int idx : idxMap.keySet()) {
         	L.get(idx).minus(dL.get(idxMap.get(idx)).scale(lr));
@@ -331,8 +377,8 @@ public class WindowModel {
     	Random rand = new Random(3);
     	for (int i = 0; i < size; i ++) {
             int sample = rand.nextInt(data.size());
-            while (data.get(sample).word.equals("<s>") || data.get(sample).word.equals("<\s>")) {
-            	sample = rand.nextInt(data.size());
+            while (data.get(sample).word.equals("<s>") || data.get(sample).word.equals("</s>")) {
+		sample = rand.nextInt(data.size());
             }
             samples.add(sample);
 
