@@ -7,6 +7,9 @@ import org.ejml.simple.*;
 
 
 import java.text.*;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.Math.*;
 
 public class WindowModel {
@@ -17,10 +20,9 @@ public class WindowModel {
 	
     private SimpleMatrix dU, db_2, dW, db_1;
 
-    private List<SimpleMatrix> dL;
-    private HashMap<Integer, Integer> idxMap;
+    private HashMap<Integer, SimpleMatrix> dL;
 
-    private final double lambda, lr, tol, reg;
+    private final double lambda, lr, tol;
 	//
 	public int windowSize, wordSize, hiddenSize;
 
@@ -35,13 +37,12 @@ public class WindowModel {
 	}
 	//more para
 	public WindowModel(int _windowSize, int _hiddenSize, double _lr, double _reg){
-                //TODO
-                this.lr = _lr;
-                this.lambda = _reg;
-                this.tol = 1e-4;
-		this.reg = _reg;
-                this.windowSize=_windowSize;
-                this.hiddenSize=_hiddenSize;
+        //TODO
+        this.lr = _lr;
+        this.lambda = _reg;
+        this.tol = 1e-4;
+        this.windowSize = _windowSize;
+        this.hiddenSize = _hiddenSize;
 		this.wordSize = 50;
         }
 
@@ -49,6 +50,7 @@ public class WindowModel {
 	 * Initializes the weights randomly. 
 	 */
 	public void initWeights(){
+		System.out.print("Init Weights... \n");
 		//TODO
 		// initialize with bias inside as the last column
 		// W = SimpleMatrix...
@@ -63,89 +65,70 @@ public class WindowModel {
 		b_2 = new SimpleMatrix(FeatureFactory.numType, 1);
 		
 		// Init L
+		L = new ArrayList<SimpleMatrix>();
 		for (int i = 0; i < FeatureFactory.allVecs.numCols(); i++) {
 			L.add(FeatureFactory.allVecs.extractVector(false, i));
 		}
 	}
 
     private List<List<Integer>> getWindows(List<Datum> data, List<Integer> sampleNums) {
-	int windowRadius = windowSize/2;
-	List<List<Integer>> windowSampleList = new ArrayList<List<Integer>>();
-	for (int i = 0; i < sampleNums.size(); i++) {
-		int sampleIndex=sampleNums.get(i);
-		Datum instance = data.get(sampleIndex);
+	    List<List<Integer>> windowSampleList = new ArrayList<List<Integer>>();
+	    for (int i = 0; i < sampleNums.size(); i++) {
+		    windowSampleList.add(getWindow(data, sampleNums.get(i)));
+	    }
+	    return windowSampleList;
+    }
+
+    // getWindow
+    private List<Integer> getWindow(List<Datum> data, int sampleIndex) {
+    	int windowRadius = windowSize / 2;
+        Datum instance = data.get(sampleIndex);
 		LinkedList<String> window = new LinkedList<String>();
 		window.add(instance.word);
 		
-		boolean sentenceLeft=instance.word.equals("<s>");
-		boolean sentenceRight=instance.word.equals("</s>");
-
+		boolean sentenceLeft = instance.word.equals("<s>");
+		boolean sentenceRight = instance.word.equals("</s>");
+        int i = sampleIndex;
+		
 		//filling left
-		for (int j=0;j<windowRadius;j++) {
-			if (sentenceLeft || i-j-1<0) window.addFirst("<s>");
+		for (int j = 0; j < windowRadius; j++) {
+			if (sentenceLeft || i-j-1 < 0) window.addFirst("<s>");
 			else {
 				window.addFirst(data.get(i-j-1).word);
-				sentenceLeft= data.get(i-j-1).word.equals("<s>");
+				sentenceLeft = data.get(i-j-1).word.equals("<s>");
 	
 			}
 		}
 		
 		//filling right
-		int m =data.size();
-                for (int j=0;j<windowRadius;j++) {
-                        if (sentenceRight || i+j+1>=m) window.addFirst("</s>");
-                        else {
-                                window.addFirst(data.get(i+j+1).word);
-                                sentenceRight= data.get(i+j+1).word.equals("</s>");                       
+		int m = data.size();
+        for (int j = 0; j < windowRadius; j++) {
+            if (sentenceRight || i+j+1 >= m) window.add("</s>");
+            else {
+                window.add(data.get(i+j+1).word);
+                sentenceRight = data.get(i+j+1).word.equals("</s>");                       
 
-                        }
-                }
+            }
+        }
 
 		//string to num
 		ArrayList<Integer> windowSample = new ArrayList<Integer>();
 		for (String word: window) {
-			windowSample.add(FeatureFactory.wordToNum.get(word));
-		}
-		windowSampleList.add(windowSample);
-	}
-	return windowSampleList;
-    }
-
-    // getWindow
-    private SimpleMatrix getLVector(List<Integer> window){
-		SimpleMatrix vec = new SimpleMatrix(wordSize * windowSize, 1);
-		for (int w = 0; w < window.size(); ++w) {
-			vec.insertIntoThis(w * wordSize, 0, L.get(w).extractVector(false, 0));
-		return vec;
-	}
-	//added get windowed input
-
-	private SimpleMatrix getWindowedSample(List<Datum> data, int sampleNum) {
-		int m = data.size();
-		SimpleMatrix windowSample = new SimpleMatrix(windowSize*wordSize,1);
-		int range_window=(windowSize-1)/2;
-		String sample;
-		for (int i = -range_window; i <= range_window; i++) {
-			int cap = 0;
-			if (sampleNum+i<0) {
-				sample = "<s>";
+			if (FeatureFactory.wordToNum.containsKey(word)) {
+			    windowSample.add(FeatureFactory.wordToNum.get(word));
 			} else {
-				if (sampleNum+i>=m) {
-					sample = "</s>";
-				} else {
-					sample = data.get(sampleNum+i).word;
-					cap = featureCap(sample);
-					sample = sample.toLowerCase();
-				}
+				windowSample.add(FeatureFactory.wordToNum.get(FeatureFactory.UNKNOWN));
 			}
-			Integer sampleOut = FeatureFactory.wordToNum.get(sample);
-			if (sampleOut == null)
-				sampleOut = 0;
-			
-			SimpleMatrix wordVec = FeatureFactory.allVecs.extractVector(false,sampleOut);
-			windowSample.insertIntoThis((i*range_window)*(wordSize),0,wordVec);
 		}
 		return windowSample;
+    }
+
+    private SimpleMatrix getLVector(List<Integer> window){
+		SimpleMatrix vec = new SimpleMatrix(wordSize * windowSize, 1);
+		for (int i = 0; i < window.size(); ++i) {
+			vec.insertIntoThis(i * wordSize, 0, L.get(window.get(i)).extractVector(false, 0));
+		}
+		return vec;
 	}
 
 	//somthing to get feature related to capticalization
@@ -186,28 +169,45 @@ public class WindowModel {
 	 * Simplest SGD training 
 	 */
 	public void train(List<Datum> _trainData ){
+		System.out.print("Start Training: \n");
 		List<Integer> samples;
 		List<List<Integer>> windows;
 		List<String> labels;
 
+        System.out.print("Gradient checking... \n");
 		// Check gradient
         // TO DO : get 10 windows and corresponding labels
         samples = getRandomSamples(_trainData, 10);
         windows = getWindows(_trainData, samples);
         labels = getLabels(_trainData, samples);
+        initGradient();
         gradient(windows, labels);
         if (!checkGradient(windows, labels)) 
         	System.out.print("Fail in gradient check.\n");
+        else
+        	System.out.print("Success!\n");
 
 		// SGD
 		initGradient();
-		int pos = 0;
+		int pos = _trainData.size() - 1;
+		int iter = 0;
+		double diff = 1;
+		boolean stop = false;
 		while (true) {
 			do {
                 pos ++;
-                if (pos == _trainData.size()) pos = 0;
+                if (pos == _trainData.size()) {
+                	if (iter > 0) System.out.printf("\t Diff: %f\n", diff);
+                	if (diff < tol) stop = true;
+                	diff = 0;
+                	pos = 0;
+                	iter ++;
+                	System.out.printf("Iteration: %d ", iter);
+                }	
 			} while (_trainData.get(pos).word.equals("<s>") || _trainData.get(pos).word.equals("</s>"));
 			
+			if (stop) break;
+
             samples.clear();
             samples.add(pos);
             windows = getWindows(_trainData, samples);
@@ -215,13 +215,13 @@ public class WindowModel {
           
             // compute gradient
             gradient(windows, labels);
-            double diff = updateParameter();
-            if (diff < tol) break;
+            diff = Math.max(diff, updateParameter());
 		}
 	}
 
 	
-	public void test(List<Datum> testData){
+	public void test(List<Datum> testData)
+	    throws FileNotFoundException, IOException {
 		// TODO
 		int numTest = testData.size();
 		PrintWriter output = new PrintWriter("../result");
@@ -253,21 +253,21 @@ public class WindowModel {
             cost += singleCost(labels.get(i));
     	}
     	cost /= m;
-    	cost += lambda / 2 / m * (normF(W) ^ 2 + normF(U) ^ 2);
+    	cost += lambda / 2 / m * (Math.pow(W.normF(), 2) + Math.pow(U.normF(), 2));
     	return cost;
     }
 
     private double singleCost(String label) {
         int trueType = FeatureFactory.typeToNum.get(label);
-        return -Math.log(p.get(trueType, 1));
+        return -Math.log(p.get(trueType, 0));
     }
 
     private int findMax() {
     	double maxP = -1;
     	int maxType = -1;
     	for (int i = 0; i < p.numRows(); i ++) {
-    		if (p.get(i, 1) > maxP) {
-    			maxP = p.get(i, 1);
+    		if (p.get(i, 0) > maxP) {
+    			maxP = p.get(i, 0);
     			maxType = i;
     		}
     	}
@@ -290,10 +290,10 @@ public class WindowModel {
 		SimpleMatrix prob = new SimpleMatrix(v.numRows(), v.numCols());
 		double sum = 0;
 		for (int i = 0; i < v.numRows(); i ++) {
-			sum += Math.exp(v.get(i, 1));
+			sum += Math.exp(v.get(i, 0));
 		}
 		for (int i = 0; i < prob.numRows(); i ++) {
-			prob.set(i, 1, Math.exp(v.get(i, 1)) / sum);
+			prob.set(i, 0, Math.exp(v.get(i, 0)) / sum);
 		}
 		return prob;
 	}
@@ -304,7 +304,7 @@ public class WindowModel {
     	for (int i = 0; i < windows.size(); i ++) {
     	  // Set y
     	  SimpleMatrix y = new SimpleMatrix(FeatureFactory.numType, 1);
-    	  y.set(FeatureFactory.typeToNum.get(labels.get(i)), 1, 1);
+    	  y.set(FeatureFactory.typeToNum.get(labels.get(i)), 0, 1);
 
           // Get window
           List<Integer> window = windows.get(i);
@@ -318,22 +318,21 @@ public class WindowModel {
           db_2 = db_2.plus(delta_2);
 
           // First Layer
-          SimpleMatrix ones = SimpleMatrix(hiddenSize, 1);
+          SimpleMatrix ones = new SimpleMatrix(hiddenSize, 1);
           ones.set(1);
           SimpleMatrix delta_1 = U.transpose().mult(delta_2).elementMult(ones.minus(h.elementMult(h)));
-          dW = dW.plus(delta_1.mult(currentL));
+          dW = dW.plus(delta_1.mult(currentL.transpose()));
           db_1 = db_1.plus(delta_1);
 
           // Word Vector
           SimpleMatrix currentdL = W.transpose().mult(delta_1);
           for (int j = 0; j < window.size(); j ++) {
           	SimpleMatrix subdL = currentdL.extractMatrix(j * wordSize, (j + 1) * wordSize, 0, 1);
-          	int idx = widnow.get(j);
-            if (idxMap.containsKey(idx)) {
-            	dL.get(idxMap.get(idx)).plus(subdL);
+          	int idx = window.get(j);
+            if (dL.containsKey(idx)) {
+            	dL.put(idx, dL.get(idx).plus(subdL));
             } else {
-            	dL.add(subdL);
-            	idxMap.put(idx, dL.size() - 1);
+            	dL.put(idx, subdL);
             }
           }
 
@@ -345,29 +344,28 @@ public class WindowModel {
         dW = dW.divide(m).plus(W.divide(m / lambda));
         db_1 = db_1.divide(m);
         
-        for (int i = 0; i < dL.size(); i ++) {
-        	dL.get(i).divide(m);
+        for (Integer idx : dL.keySet()) {
+        	dL.put(idx, dL.get(idx).divide(m));
         }
     }
 
     private double updateParameter() {
     	double diff = 0;
     	U = U.minus(dU.scale(lr));
-        diff = Math.max(diff, dU.extractMaxAbs() * lr);
+        diff = Math.max(diff, dU.elementMaxAbs() * lr);
 
     	b_2 = b_2.minus(db_2.scale(lr));
-        diff = Math.max(diff, db_2.extractMaxAbs() * lr);
+        diff = Math.max(diff, db_2.elementMaxAbs() * lr);
 
     	W = W.minus(dW.scale(lr));
-        diff = Math.max(diff, dW.extractMaxAbs() * lr);
+        diff = Math.max(diff, dW.elementMaxAbs() * lr);
 
     	b_1 = b_1.minus(db_1.scale(lr));
-        diff = Math.max(diff, db_1.extractMaxAbs() * lr);
-			}
+        diff = Math.max(diff, db_1.elementMaxAbs() * lr);
 
-        for (int idx : idxMap.keySet()) {
-        	L.get(idx).minus(dL.get(idxMap.get(idx)).scale(lr));
-        	diff = Math.max(diff, dL.get(idxMap.get(idx)).extractMaxAbs() * lr);
+        for (Integer idx : dL.keySet()) {
+        	L.get(idx).set(L.get(idx).minus(dL.get(idx).scale(lr)));
+        	diff = Math.max(diff, dL.get(idx).elementMaxAbs() * lr);
         }
         return diff;
     }
@@ -378,7 +376,7 @@ public class WindowModel {
     	for (int i = 0; i < size; i ++) {
             int sample = rand.nextInt(data.size());
             while (data.get(sample).word.equals("<s>") || data.get(sample).word.equals("</s>")) {
-		sample = rand.nextInt(data.size());
+		         sample = rand.nextInt(data.size());
             }
             samples.add(sample);
 
@@ -391,6 +389,7 @@ public class WindowModel {
     	double maxDiff = 1e-8; 
 
         // check dU
+        System.out.print("Checking dU...\n");
         for (int i = 0; i < U.numRows(); i ++) 
         	for (int j = 0; j < U.numCols(); j ++) {
         		double tmp = U.get(i, j);
@@ -403,54 +402,61 @@ public class WindowModel {
         			return false;
         	}
         // check db_2
+        System.out.print("Checking db_2...\n");
         for (int i = 0; i < b_2.numRows(); i ++) {
-        	double tmp = b_2.get(i, 1);
-        	b_2.set(i, 1, tmp + epsilon);
+        	double tmp = b_2.get(i, 0);
+        	b_2.set(i, 0, tmp + epsilon);
         	double cost_plus = costFunction(windows, labels);
-        	b_2.set(i, 1, tmp - epsilon);
+        	b_2.set(i, 0, tmp - epsilon);
         	double cost_minus = costFunction(windows, labels);
-        	b_2.set(i, 1, tmp);
-        	if (Math.abs((cost_plus - cost_minus) / (2 * epsilon) - db_2.get(i, 1)) > maxDiff)
+        	b_2.set(i, 0, tmp);
+        	if (Math.abs((cost_plus - cost_minus) / (2 * epsilon) - db_2.get(i, 0)) > maxDiff)
         		return false;
         }
 
         // check dW
+        System.out.print("Checking dW...\n");
         for (int i = 0; i < W.numRows(); i ++) 
         	for (int j = 0; j < W.numCols(); j ++) {
         		double tmp = W.get(i, j);
         		W.set(i, j, tmp + epsilon);
         		double cost_plus = costFunction(windows, labels);
         		W.set(i, j, tmp - epsilon);
-        		double cost_minus = costFunction(windoes, labels);
+        		double cost_minus = costFunction(windows, labels);
         		W.set(i, j, tmp);
         		if (Math.abs((cost_plus - cost_minus) / (2 * epsilon) - dW.get(i, j)) > maxDiff) 
         			return false;
         	}
 
         // check db_1
+        System.out.print("Checking db_1...\n");
         for (int i = 0; i < b_1.numRows(); i ++) {
-        	double tmp = b_1.get(i, 1);
-        	b_1.set(i, 1, tmp + epsilon);
+        	double tmp = b_1.get(i, 0);
+        	b_1.set(i, 0, tmp + epsilon);
         	double cost_plus = costFunction(windows, labels);
-        	b_1.set(i, 1, tmp - epsilon);
+        	b_1.set(i, 0, tmp - epsilon);
         	double cost_minus = costFunction(windows, labels);
-        	b_1.set(i, 1, tmp);
-        	if (Math.abs((cost_plus - cost_minus) / (2 * epsilon) - db_1.get(i, 1)) > maxDiff)
+        	b_1.set(i, 0, tmp);
+        	if (Math.abs((cost_plus - cost_minus) / (2 * epsilon) - db_1.get(i, 0)) > maxDiff)
         		return false;
         }
 
         // check dL
-        for (int idx : idxMap.keySet()) {
-            SimpleMatrix currentL = L.get(idx);
-            for (int i = 0; i < currentL.numRows(); i ++) {
-        	    double tmp = currentL.get(i, 1);
-        	    currentL.set(i, 1, tmp + epsilon);
+        System.out.print("Checking dL...\n");
+        for (Integer idx : dL.keySet()) {
+            for (int i = 0; i < L.get(idx).numRows(); i ++) {
+        	    double tmp = L.get(idx).get(i, 0);
+        	    L.get(idx).set(i, 0, tmp + epsilon);
         	    double cost_plus = costFunction(windows, labels);
-        	    currentL.set(i, 1, tmp - epsilon);
+        	    L.get(idx).set(i, 0, tmp - epsilon);
         	    double cost_minus = costFunction(windows, labels);
-        	    currentL.set(i, 1, tmp);
-        	    if (Math.abs((cost_plus - cost_minus) / (2 * epsilon) - dL.get(idxMap.get(idx)).get(i, 1)) > maxDiff)
-        		    return false;
+        	    L.get(idx).set(i, 0, tmp);
+        	    if (Math.abs((cost_plus - cost_minus) / (2 * epsilon) - dL.get(idx).get(i, 0)) > maxDiff) {
+        	    	System.out.printf("%d %d\n", idx, i);
+        	    	System.out.printf("%f %f %f %f\n", cost_plus, cost_minus, (cost_plus - cost_minus) / (2 * epsilon), dL.get(idx).get(i, 0));
+        	    	return false;
+        	    }
+        		    
             }
         }
 
@@ -463,8 +469,7 @@ public class WindowModel {
     	dW = new SimpleMatrix(hiddenSize, windowSize * wordSize);
     	db_1 = new SimpleMatrix(hiddenSize, 1);
     	
-    	dL = new ArrayList<SimpleMatrix>();
-    	idxMap = new HashMap<Integer, Integer>(); 
+    	dL = new HashMap<Integer, SimpleMatrix>(); 
     }
 
     private void zeroGradient() {
@@ -474,6 +479,5 @@ public class WindowModel {
     	db_1.zero();
     	
     	dL.clear();
-    	idxMap.clear();
     }
 }

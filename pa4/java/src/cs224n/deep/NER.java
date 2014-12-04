@@ -17,7 +17,7 @@ public class NER {
 	//default parameter
 	int windowSize = 5;
 	int hiddenSize = 100;
-	double learningRate = 0.01;
+	double learningRate = 0.001;
 	double regularization = 0.0001;
 	//parse parameter
 	if (args.length >= 3) 
@@ -37,12 +37,13 @@ public class NER {
 	//TODO: Implement this function (just reads in vocab and word vectors)
 	FeatureFactory.initializeVocab("../data/vocab.txt");
 	SimpleMatrix allVecs= FeatureFactory.readWordVectors("../data/wordVectors.txt");
+	FeatureFactory.initType();
 
 	//baseline
         System.out.println("Baseline:");
         BaselineModel baseline = new BaselineModel();
-        BaselineModel.train(trainData);
-        BaselineModel.test(testData);
+        baseline.train(trainData);
+        baseline.test(testData);
 
 	// initialize model 
 	WindowModel model = new WindowModel(windowSize, hiddenSize, learningRate, regularization);
@@ -54,5 +55,6 @@ public class NER {
 	model.train(trainData);
  	System.out.println("Test Network:");
 	model.test(testData);
+    
     }
 }

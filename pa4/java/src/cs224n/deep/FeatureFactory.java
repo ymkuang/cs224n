@@ -40,16 +40,16 @@ public class FeatureFactory {
 			String label;
 			if (line.trim().length() == 0) {
 			// blank line
-				word = "<s>";
-				label = "O";
-			//	continue;
+				data.add(new Datum("</s>", "O"));
+				data.add(new Datum("<s>", "O"));
 			} else {
 				String[] bits = line.split("\\s+");
 				word = bits[0];
 				label = bits[1];
-			}
-			Datum datum = new Datum(word, label);
-			data.add(datum);
+			
+				Datum datum = new Datum(word, label);
+				data.add(datum);
+		    } 
 		}
 		in.close();
 		return data;
@@ -58,7 +58,7 @@ public class FeatureFactory {
     static List<String> typeList = new ArrayList<String>();
     static HashMap<String, Integer> typeToNum = new HashMap<String, Integer>();
     static int numType;
-    public static HashMap<String, Integer> initType() {
+    public static void initType() {
     	typeList.add("O");
     	typeList.add("LOC");
     	typeList.add("MISC");
@@ -72,7 +72,6 @@ public class FeatureFactory {
     	typeToNum.put("PER", 4);
     	
     	numType = 5;
-	    return typeToNum;
     }
 
 
@@ -111,6 +110,8 @@ public class FeatureFactory {
 		return allVecs;
 	}
 
+    // Unknown word
+	public static final String UNKNOWN = "UUUNKKK";
 	// might be useful for word to number lookups, just access them directly in WindowModel
 	public static HashMap<String, Integer> wordToNum = new HashMap<String, Integer>(); 
 	public static HashMap<Integer, String> numToWord = new HashMap<Integer, String>();

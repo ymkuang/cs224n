@@ -7,6 +7,9 @@ import org.ejml.simple.*;
 
 
 import java.text.*;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.Math.*;
 
 public class BaselineModel {
@@ -20,10 +23,10 @@ public class BaselineModel {
 	/**
 	 * Simplest baseline training 
 	 */
-	public void train(List<Datum> trainData ){
+	public void train(List<Datum> trainData ) {
 		int numTrain = trainData.size();
 		for (int i=0;i<numTrain;i++) {
-			Datum sample = trainDate.get(i);
+			Datum sample = trainData.get(i);
 			String word = sample.word;
 			String label = sample.label;
 			if (!wordMap.containsKey(word))
@@ -32,7 +35,8 @@ public class BaselineModel {
 	}
 
 	
-	public void test(List<Datum> testData){
+	public void test(List<Datum> testData)
+	    throws FileNotFoundException, IOException {
 		int numTest = testData.size();
 		PrintWriter output = new PrintWriter("../baseline");
 		// output according to example.out
