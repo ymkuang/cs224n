@@ -10,14 +10,14 @@ public class NER {
     
     public static void main(String[] args) throws IOException {
 	if (args.length < 2) {
-	    System.out.println("USAGE: java -cp classes NER ../data/train ../data/dev [windowSize=5] [hiddenlayerSize=100] [learningRate=0.01] [regularization=0.0001]");
+	    System.out.println("USAGE: java -Xmx4g -Xprof -cp \"classes:extlib/*\" cs224n.deep.NER ../data/train ../data/dev [windowSize=5] [hiddenlayerSize=100] [learningRate=0.01] [regularization=0.0001]");
 	    return;
 	}	    
 
 	//default parameter
 	int windowSize = 5;
 	int hiddenSize = 100;
-	double learningRate = 0.001;
+	double learningRate = 0.05;
 	double regularization = 0.0001;
 	//parse parameter
 	if (args.length >= 3) 

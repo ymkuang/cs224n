@@ -24,7 +24,7 @@ public class WindowModel {
 
     private final double lambda, lr, tol;
 	//
-	public int windowSize, wordSize, hiddenSize;
+	public int windowSize, wordSize, hiddenSize, maxIter;
 
 	public WindowModel(int _windowSize, int _hiddenSize, double _lr){
 		//TODO
@@ -34,6 +34,7 @@ public class WindowModel {
 		this.windowSize=_windowSize;
 		this.hiddenSize=_hiddenSize;
 		this.wordSize = 50;
+		this.maxIter = 5;
 	}
 	//more para
 	public WindowModel(int _windowSize, int _hiddenSize, double _lr, double _reg){
@@ -44,7 +45,8 @@ public class WindowModel {
         this.windowSize = _windowSize;
         this.hiddenSize = _hiddenSize;
 		this.wordSize = 50;
-        }
+        this.maxIter = 5;
+    }
 
 	/**
 	 * Initializes the weights randomly. 
@@ -191,14 +193,16 @@ public class WindowModel {
 		initGradient();
 		int pos = _trainData.size() - 1;
 		int iter = 0;
-		double diff = 1;
+		double oldCost = 1, cost = 0, diff = 0;
 		boolean stop = false;
 		while (true) {
 			do {
                 pos ++;
                 if (pos == _trainData.size()) {
-                	if (iter > 0) System.out.printf("\t Diff: %f\n", diff);
-                	if (diff < tol) stop = true;
+                	cost = allCostFunction(_trainData);
+                	System.out.printf("\t Cost: %f \t Diff: %f\n", cost, diff);
+                	if (Math.abs(oldCost - cost) < tol || iter > maxIter) stop = true;
+                	oldCost = cost;
                 	diff = 0;
                 	pos = 0;
                 	iter ++;
@@ -251,6 +255,23 @@ public class WindowModel {
     		SimpleMatrix currentL = getLVector(windows.get(i));
     		feedForward(currentL);
             cost += singleCost(labels.get(i));
+    	}
+    	cost /= m;
+    	cost += lambda / 2 / m * (Math.pow(W.normF(), 2) + Math.pow(U.normF(), 2));
+    	return cost;
+    }
+
+    private double allCostFunction(List<Datum> data) {
+    	int m = 0;
+    	double cost = 0;
+    	for (int i = 0; i < data.size(); i ++) {
+    		Datum sample = data.get(i);
+    		if (sample.word.equals("<s>") || sample.word.equals("</s>"))
+    			continue;
+    		m ++;
+    		SimpleMatrix currentL = getLVector(getWindow(data, i));
+    		feedForward(currentL);
+    		cost += singleCost(sample.label);
     	}
     	cost /= m;
     	cost += lambda / 2 / m * (Math.pow(W.normF(), 2) + Math.pow(U.normF(), 2));
@@ -386,7 +407,7 @@ public class WindowModel {
 
     private boolean checkGradient(List<List<Integer>> windows, List<String> labels) {
     	double epsilon = 1e-4;
-    	double maxDiff = 1e-8; 
+    	double maxDiff = 1e-7; 
 
         // check dU
         System.out.print("Checking dU...\n");
