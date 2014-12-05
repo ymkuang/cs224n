@@ -168,7 +168,8 @@ public class TwoLayerModel {
 	/**
 	 * Simplest SGD training 
 	 */
-	public void train(List<Datum> _trainData ){
+	public void train(List<Datum> _trainData )
+        throws FileNotFoundException, IOException {
 		System.out.print("Start Training: \n");
 		List<Integer> samples;
 		List<List<Integer>> windows;
@@ -225,7 +226,8 @@ public class TwoLayerModel {
 	}
 
 	
-	public void test(List<Datum> testData) {
+	public void test(List<Datum> testData) 
+        throws FileNotFoundException, IOException {
 		// TODO
         String fileName = "../test_result_twolayer" + windowSize + hiddenSize_1 + hiddenSize_2 + maxIter + lr + lambda;
         fitResult(testData, fileName);
