@@ -27,18 +27,8 @@ public class WindowModel {
 	//
 	public int windowSize, wordSize, hiddenSize, maxIter;
 
-	public WindowModel(int _windowSize, int _hiddenSize, double _lr){
-		//TODO
-		this.lr = _lr;
-		this.lambda = 0.01;
-		this.tol = 1e-4;
-		this.windowSize=_windowSize;
-		this.hiddenSize=_hiddenSize;
-		this.wordSize = 50;
-		this.maxIter = 20;
-	}
 	//more para
-	public WindowModel(int _windowSize, int _hiddenSize, double _lr, double _reg){
+	public WindowModel(int _windowSize, int _hiddenSize, int maxIter, double _lr, double _reg){
         //TODO
         this.lr = _lr;
         this.lambda = _reg;
@@ -46,7 +36,7 @@ public class WindowModel {
         this.windowSize = _windowSize;
         this.hiddenSize = _hiddenSize;
 		this.wordSize = 50;
-        this.maxIter = 20;
+        this.maxIter = maxIter;
     }
 
 	/**
@@ -62,9 +52,9 @@ public class WindowModel {
 		double eps_W = Math.sqrt(6) / Math.sqrt(wordSize * windowSize + hiddenSize);
 		double eps_U = Math.sqrt(6) / Math.sqrt(hiddenSize + FeatureFactory.numType);
 
-		W = SimpleMatrix.random(hiddenSize, wordSize * windowSize, -eps_W, eps_W, new Random());
+		W = SimpleMatrix.random(hiddenSize, wordSize * windowSize, -eps_W, eps_W, new Random(11));
 		b_1 = new SimpleMatrix(hiddenSize, 1);
-		U = SimpleMatrix.random(FeatureFactory.numType, hiddenSize, -eps_U, eps_U, new Random());
+		U = SimpleMatrix.random(FeatureFactory.numType, hiddenSize, -eps_U, eps_U, new Random(13));
 		b_2 = new SimpleMatrix(FeatureFactory.numType, 1);
 		
 		// Init L
@@ -174,7 +164,8 @@ public class WindowModel {
 	/**
 	 * Simplest SGD training 
 	 */
-	public void train(List<Datum> _trainData ){
+	public void train(List<Datum> _trainData )
+        throws FileNotFoundException, IOException {
 		System.out.print("Start Training: \n");
 		List<Integer> samples;
 		List<List<Integer>> windows;
@@ -194,6 +185,7 @@ public class WindowModel {
         	System.out.print("Success!\n");
 
 		// SGD
+        samples = new ArrayList<Integer>();
 		initGradient();
 		int pos = _trainData.size() - 1;
 		int iter = 0;
@@ -204,12 +196,12 @@ public class WindowModel {
                 pos ++;
                 if (pos == _trainData.size()) {
                 	cost = allCostFunction(_trainData);
-                	System.out.printf("\t Cost: %f \t Diff: %f\n", cost, diff);
+                	System.out.printf("\t Cost: %f \n", cost);
+                    iter ++;
                 	if (Math.abs(oldCost - cost) < tol || iter > maxIter) stop = true;
                 	oldCost = cost;
                 	diff = 0;
                 	pos = 0;
-                	iter ++;
                 	System.out.printf("Iteration: %d ", iter);
                 }	
 			} while (_trainData.get(pos).word.equals("<s>") || _trainData.get(pos).word.equals("</s>"));
@@ -225,25 +217,35 @@ public class WindowModel {
             gradient(windows, labels);
             diff = Math.max(diff, updateParameter());
 		}
+        String fileName = "../train_result" + windowSize + hiddenSize + maxIter + lr + lambda; 
+        fitResult(_trainData, fileName);
 	}
 
 	
-	public void test(List<Datum> testData)
-	    throws FileNotFoundException, IOException {
+	public void test(List<Datum> testData) 
+        throws FileNotFoundException, IOException {
 		// TODO
-		int numTest = testData.size();
-		PrintWriter output = new PrintWriter("../result");
-		// output according to example.out
-		for (int i = 0; i < numTest; i ++) {
-			Datum sample = testData.get(i);
-			if (sample.word.equals("<s>") || sample.word.equals("</s>")) continue;
-            SimpleMatrix currentL = getLVector(getWindow(testData, i));
+        String fileName = "../test_result" + windowSize + hiddenSize + maxIter + lr + lambda;
+        fitResult(testData, fileName);
+		
+	}
+
+    private void fitResult(List<Datum> data, String fileName) 
+        throws FileNotFoundException, IOException {
+        int numTest = data.size();
+        PrintWriter output = new PrintWriter(fileName);
+        // output according to example.out
+        for (int i = 0; i < numTest; i ++) {
+            Datum sample = data.get(i);
+            if (sample.word.equals("<s>") || sample.word.equals("</s>")) continue;
+            SimpleMatrix currentL = getLVector(getWindow(data, i));
             feedForward(currentL);
             String predLabel = FeatureFactory.typeList.get(findMax());
             output.printf("%s\t%s\t%s\n", sample.word, predLabel, sample.label);
-		}
+        }
         output.close();
-	}
+
+    }
 
     // compute h and p
     private void feedForward(SimpleMatrix currentL) {
@@ -378,25 +380,20 @@ public class WindowModel {
     private double updateParameter() {
     	double diff = 0;
     	U = U.minus(dU.scale(lr));
-    	//CommonOps.subEquals(U, dU.scale(lr));
-        diff = Math.max(diff, dU.elementMaxAbs() * lr);
+        //diff = Math.max(diff, dU.elementMaxAbs() * lr);
 
     	b_2 = b_2.minus(db_2.scale(lr));
-    	//CommonOps.subEquals(b_2, db_2.scale(lr));
-        diff = Math.max(diff, db_2.elementMaxAbs() * lr);
+        //diff = Math.max(diff, db_2.elementMaxAbs() * lr);
 
     	W = W.minus(dW.scale(lr));
-    	//CommonOps.subEquals(W, dW.scale(lr));
-        diff = Math.max(diff, dW.elementMaxAbs() * lr);
+        //diff = Math.max(diff, dW.elementMaxAbs() * lr);
 
     	b_1 = b_1.minus(db_1.scale(lr));
-    	//CommonOps.subEquals(b_1, db_1.scale(lr));
-        diff = Math.max(diff, db_1.elementMaxAbs() * lr);
+        //diff = Math.max(diff, db_1.elementMaxAbs() * lr);
 
         for (Integer idx : dL.keySet()) {
         	L.get(idx).set(L.get(idx).minus(dL.get(idx).scale(lr)));
-        	//CommonOps.subEquals(L.get(idx), dL.get(idx).scale(lr));
-        	diff = Math.max(diff, dL.get(idx).elementMaxAbs() * lr);
+        	//diff = Math.max(diff, dL.get(idx).elementMaxAbs() * lr);
         }
         return diff;
     }
