@@ -112,6 +112,7 @@ public class FeatureFactory {
 
     // Unknown word
 	public static final String UNKNOWN = "UUUNKKK";
+	public static final String NUMBER = "NNNUMMM";
 	// might be useful for word to number lookups, just access them directly in WindowModel
 	public static HashMap<String, Integer> wordToNum = new HashMap<String, Integer>(); 
 	public static HashMap<Integer, String> numToWord = new HashMap<Integer, String>();

@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.ejml.data.*;
 import org.ejml.simple.*;
+import org.apache.commons.math.util.FastMath;
 
 
 import java.text.*;
@@ -34,7 +35,7 @@ public class WindowModel {
 		this.windowSize=_windowSize;
 		this.hiddenSize=_hiddenSize;
 		this.wordSize = 50;
-		this.maxIter = 5;
+		this.maxIter = 20;
 	}
 	//more para
 	public WindowModel(int _windowSize, int _hiddenSize, double _lr, double _reg){
@@ -45,7 +46,7 @@ public class WindowModel {
         this.windowSize = _windowSize;
         this.hiddenSize = _hiddenSize;
 		this.wordSize = 50;
-        this.maxIter = 5;
+        this.maxIter = 20;
     }
 
 	/**
@@ -116,8 +117,11 @@ public class WindowModel {
 		//string to num
 		ArrayList<Integer> windowSample = new ArrayList<Integer>();
 		for (String word: window) {
+			word = word.toLowerCase();
 			if (FeatureFactory.wordToNum.containsKey(word)) {
 			    windowSample.add(FeatureFactory.wordToNum.get(word));
+			} else if (isNumeric(word)) {
+                windowSample.add(FeatureFactory.wordToNum.get(FeatureFactory.NUMBER));
 			} else {
 				windowSample.add(FeatureFactory.wordToNum.get(FeatureFactory.UNKNOWN));
 			}
@@ -302,7 +306,7 @@ public class WindowModel {
 
     	for (int i = 0; i < numRows; i ++)
     		for (int j = 0; j < numCols; j ++) {
-    			res.set(i, j, Math.tanh(mat.get(i,j)));
+    			res.set(i, j, FastMath.tanh(mat.get(i,j)));
     		}
     	return res;
     }
@@ -356,7 +360,7 @@ public class WindowModel {
             	dL.put(idx, subdL);
             }
           }
-
+    
     	}
 
     	// Add regularization term
@@ -364,6 +368,7 @@ public class WindowModel {
         db_2 = db_2.divide(m);
         dW = dW.divide(m).plus(W.divide(m / lambda));
         db_1 = db_1.divide(m);
+        
         
         for (Integer idx : dL.keySet()) {
         	dL.put(idx, dL.get(idx).divide(m));
@@ -373,19 +378,24 @@ public class WindowModel {
     private double updateParameter() {
     	double diff = 0;
     	U = U.minus(dU.scale(lr));
+    	//CommonOps.subEquals(U, dU.scale(lr));
         diff = Math.max(diff, dU.elementMaxAbs() * lr);
 
     	b_2 = b_2.minus(db_2.scale(lr));
+    	//CommonOps.subEquals(b_2, db_2.scale(lr));
         diff = Math.max(diff, db_2.elementMaxAbs() * lr);
 
     	W = W.minus(dW.scale(lr));
+    	//CommonOps.subEquals(W, dW.scale(lr));
         diff = Math.max(diff, dW.elementMaxAbs() * lr);
 
     	b_1 = b_1.minus(db_1.scale(lr));
+    	//CommonOps.subEquals(b_1, db_1.scale(lr));
         diff = Math.max(diff, db_1.elementMaxAbs() * lr);
 
         for (Integer idx : dL.keySet()) {
         	L.get(idx).set(L.get(idx).minus(dL.get(idx).scale(lr)));
+        	//CommonOps.subEquals(L.get(idx), dL.get(idx).scale(lr));
         	diff = Math.max(diff, dL.get(idx).elementMaxAbs() * lr);
         }
         return diff;
@@ -500,5 +510,9 @@ public class WindowModel {
     	db_1.zero();
     	
     	dL.clear();
+    }
+
+    private boolean isNumeric(String str) {
+    	return str.matches("-?\\d+(\\.\\d+)?");
     }
 }
