@@ -24,12 +24,13 @@ public class WindowModel {
     private HashMap<Integer, SimpleMatrix> dL;
 
     private final double lambda, lr, tol;
+    private final int randomVector;
 	//
 	public int windowSize, wordSize, hiddenSize, maxIter;
 
 	//more para
-	public WindowModel(int _windowSize, int _hiddenSize, int maxIter, double _lr, double _reg){
-        //TODO
+	public WindowModel(int _windowSize, int _hiddenSize, int maxIter, double _lr, double _reg, int _rand)
+    {//TODO
         this.lr = _lr;
         this.lambda = _reg;
         this.tol = 1e-4;
@@ -37,6 +38,7 @@ public class WindowModel {
         this.hiddenSize = _hiddenSize;
 		this.wordSize = 50;
         this.maxIter = maxIter;
+	this.randomVector = _rand;
     }
 
 	/**
@@ -71,7 +73,6 @@ public class WindowModel {
 	    }
 	    return windowSampleList;
     }
-
     // getWindow
     private List<Integer> getWindow(List<Datum> data, int sampleIndex) {
     	int windowRadius = windowSize / 2;
@@ -218,7 +219,9 @@ public class WindowModel {
             diff = Math.max(diff, updateParameter());
 		}
         String fileName = "../train_result" + windowSize + hiddenSize + maxIter + lr + lambda; 
-        fitResult(_trainData, fileName);
+        if (randomVector>0)
+		fileName = fileName + 'r';
+	fitResult(_trainData, fileName);
 	}
 
 	
@@ -226,6 +229,8 @@ public class WindowModel {
         throws FileNotFoundException, IOException {
 		// TODO
         String fileName = "../test_result" + windowSize + hiddenSize + maxIter + lr + lambda;
+	if (randomVector>0)
+                fileName = fileName + 'r';
         fitResult(testData, fileName);
 		
 	}

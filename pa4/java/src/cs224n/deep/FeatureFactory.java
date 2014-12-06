@@ -77,7 +77,7 @@ public class FeatureFactory {
 
 	// Look up table matrix with all word vectors as defined in lecture with dimensionality n x |V|
 	static SimpleMatrix allVecs; //access it directly in WindowModel
-	public static SimpleMatrix readWordVectors(String vecFilename) throws IOException {
+	public static SimpleMatrix readWordVectors(String vecFilename, int toRandom) throws IOException {
 		if (allVecs!=null) return allVecs;
 		//return null;
 		//TODO implement this
@@ -96,11 +96,15 @@ public class FeatureFactory {
 		int numRows = wordVecsArray.get(0).length;
 		int numCols = wordVecsArray.size(); 
 		allVecs = new SimpleMatrix(numRows, numCols);
-		
+		Random myR = new Random(123);
 		for(int col=0; col<numCols; col++){
 			String[] vec = wordVecsArray.get(col);
 			for(int row=0; row<numRows; row++){
-				allVecs.set(row,col,new Double(vec[row]));
+				Double tmp = new Double(vec[row]);
+				//randome vector
+				if (toRandom>0) 
+					tmp = new Double(myR.nextDouble());
+				allVecs.set(row,col,tmp);
 			}
 		}
 		in.close();
