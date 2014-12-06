@@ -43,13 +43,15 @@ public class NER {
 	FeatureFactory.initType();
 
 	//baseline
-        System.out.println("Baseline:");
+    /*    System.out.println("Baseline:");
         BaselineModel baseline = new BaselineModel();
         baseline.train(trainData);
         baseline.test(testData);
+    */
 
+    // One layer NN
 	// initialize model 
-	WindowModel model = new WindowModel(windowSize, hiddenSize, maxIter, learningRate, regularization);
+	/*WindowModel model = new WindowModel(windowSize, hiddenSize, maxIter, learningRate, regularization);
 	System.out.println("Current super-parameters used: Window size: " + windowSize + ", Hidden layer size: " + hiddenSize + ", Max Iteration: " + maxIter + ", Learning Rate: " + learningRate + " and regularization: " + regularization);
 	model.initWeights();
 
@@ -58,6 +60,17 @@ public class NER {
 	model.train(trainData);
  	System.out.println("Test Network:");
 	model.test(testData);
-    
+    */
+
+    // Two layer NN
+    // initialize model
+    TwoLayerModel twoLayerModel = new TwoLayerModel(5, 150, 100, 20, 0.01, 1e-4);
+	twoLayerModel.initWeights();
+
+	//train and test
+	System.out.println("Train Network:");
+	twoLayerModel.train(trainData);
+ 	System.out.println("Test Network:");
+	twoLayerModel.test(testData);
     }
 }
