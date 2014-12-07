@@ -231,8 +231,10 @@ public class WindowModel {
         throws FileNotFoundException, IOException {
 		// TODO
         String fileName = "../test_result" + windowSize + hiddenSize + maxIter + lr + lambda;
-	if (randomVector>0)
+	if (randomVector==1)
                 fileName = fileName + 'r';
+	if (randomVector==2)
+		fileName = fileName + "word2vec";
         fitResult(testData, fileName);
 		
 	}
