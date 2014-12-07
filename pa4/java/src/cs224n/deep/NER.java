@@ -45,11 +45,11 @@ public class NER {
 	FeatureFactory.initType();
 
 	//baseline
-    /*    System.out.println("Baseline:");
+        System.out.println("Baseline:");
         BaselineModel baseline = new BaselineModel();
         baseline.train(trainData);
         baseline.test(testData);
-    */
+    
 
     // One layer NN
 	// initialize model 

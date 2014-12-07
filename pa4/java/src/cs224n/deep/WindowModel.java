@@ -38,7 +38,7 @@ public class WindowModel {
         this.hiddenSize = _hiddenSize;
 		this.wordSize = 50;
         this.maxIter = maxIter;
-	this.randomVector = _rand;
+	    this.randomVector = _rand;
     }
 
 	/**
@@ -229,7 +229,7 @@ public class WindowModel {
         throws FileNotFoundException, IOException {
 		// TODO
         String fileName = "../test_result" + windowSize + hiddenSize + maxIter + lr + lambda;
-	if (randomVector>0)
+        if (randomVector>0)
                 fileName = fileName + 'r';
         fitResult(testData, fileName);
 		
@@ -246,7 +246,7 @@ public class WindowModel {
             SimpleMatrix currentL = getLVector(getWindow(data, i));
             feedForward(currentL);
             String predLabel = FeatureFactory.typeList.get(findMax());
-            output.printf("%s\t%s\t%s\n", sample.word, predLabel, sample.label);
+            output.printf("%s\t%s\t%s\n", sample.word, sample.label, predLabel);
         }
         output.close();
 
