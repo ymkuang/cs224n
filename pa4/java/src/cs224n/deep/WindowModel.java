@@ -167,6 +167,7 @@ public class WindowModel {
 	 */
 	public void train(List<Datum> _trainData )
         throws FileNotFoundException, IOException {
+		OutputAllvec("wordvector_before.txt");
 		System.out.print("Start Training: \n");
 		List<Integer> samples;
 		List<List<Integer>> windows;
@@ -222,6 +223,7 @@ public class WindowModel {
         if (randomVector>0)
 		fileName = fileName + 'r';
 	fitResult(_trainData, fileName);
+	OutputAllvec("wordvector_after.txt");
 	}
 
 	
@@ -229,9 +231,11 @@ public class WindowModel {
         throws FileNotFoundException, IOException {
 		// TODO
         String fileName = "../test_result" + windowSize + hiddenSize + maxIter + lr + lambda;
-        if (randomVector>0)
-                fileName = fileName + 'r';
-        fitResult(testData, fileName);
+    	if (randomVector==1)
+            fileName = fileName + 'r';
+    	if (randomVector==2)
+    		fileName = fileName + "word2vec";
+            fitResult(testData, fileName);
 		
 	}
 
@@ -251,6 +255,22 @@ public class WindowModel {
         output.close();
 
     }
+
+    private void OutputAllvec(String fileName)
+	throws FileNotFoundException, IOException {
+        int numL = L.size();
+        PrintWriter output = new PrintWriter(fileName);
+        // output according to example.out
+        for (int i = 0; i < numL; i ++) {
+            for (int j=0;j<L.get(i).numRows(); j++) {
+		double tmp = L.get(i).get(j,0);
+		output.printf("%f ",tmp);
+	    }
+	    output.printf("\n");
+        }
+        output.close();
+    }
+
 
     // compute h and p
     private void feedForward(SimpleMatrix currentL) {
